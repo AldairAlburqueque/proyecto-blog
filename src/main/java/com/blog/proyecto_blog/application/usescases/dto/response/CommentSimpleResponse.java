@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CommentSimpleResponse {
     private Long idComment;
     private String comment;
-    private String state;
+    private Long blogId;
     private UserSimpleResponse user;
     private LocalDateTime createdAt;
 }

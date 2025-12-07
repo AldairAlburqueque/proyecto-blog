@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class CategoryResponse {
     private Long idCategory;
     private String categoria;
+    private String description;
 }

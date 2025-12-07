@@ -12,5 +12,5 @@ public class UserResponse {
     private String name;
     private String email;
     private String description;
-    private RolResponse rol;
+    private String rol;
 }

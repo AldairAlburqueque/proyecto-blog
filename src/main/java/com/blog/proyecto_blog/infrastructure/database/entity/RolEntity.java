@@ -19,6 +19,4 @@ public class RolEntity {
     private String rol;
     @OneToMany(mappedBy = "rol")
     private List<UserEntity> users;
-    @Version
-    private Long version;
 }

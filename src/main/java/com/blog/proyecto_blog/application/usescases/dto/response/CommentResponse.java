@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 public class CommentResponse {
     private Long idComment;
     private String comment;
-    private String state;
     private UserSimpleResponse user;
+    private Long blogId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
