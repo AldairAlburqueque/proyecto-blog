@@ -1,6 +1,7 @@
 package com.blog.proyecto_blog.application.usescases.implementation;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.CommentRequest;
+import com.blog.proyecto_blog.application.usescases.dto.request.CommentUpdateRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.ICommentInterface;
 import com.blog.proyecto_blog.domain.services.interfaces.ICommentService;
@@ -20,7 +21,7 @@ public class CommentImplementation implements ICommentInterface {
     }
 
     @Override
-    public CommentSimpleResponse updateComment(Long id, CommentRequest request) {
+    public CommentSimpleResponse updateComment(Long id, CommentUpdateRequest request) {
         return iCommentService.updateCommentService(id, request);
     }
 

@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapper {
 
-    private final RoleMapper roleMapper; // Usamos RoleMapper
+    private final RoleMapper roleMapper;
 
-    // -------------------------------
-    //  UserRequest -> UserEntity
-    // -------------------------------
+
+    // UserEntity
     public UserEntity toEntity(UserRequest request, RolEntity rol) {
         if (request == null) return null;
 
@@ -27,14 +26,10 @@ public class UserMapper {
         entity.setPassword(request.getPassword());
         entity.setRol(rol);
 
-        // Si tu request trae roles como IDs (ej: List<Long>)
-        // NO mapear aquí: eso se hace en el service
         return entity;
     }
 
-    // -------------------------------
-    //  UserEntity -> UserResponse
-    // -------------------------------
+    // UserResponse
     public UserResponse toResponse(UserEntity entity) {
         if (entity == null) return null;
 
@@ -50,9 +45,8 @@ public class UserMapper {
         return response;
     }
 
-    //--------------------------------------------------------------------
-    // Entity -> UserSimpleResponse
-    //--------------------------------------------------------------------
+
+    // UserSimpleResponse
     public UserSimpleResponse toSimple(UserEntity entity) {
         if (entity == null) return null;
 

@@ -1,6 +1,7 @@
 package com.blog.proyecto_blog.infrastructure.controllers;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.CommentRequest;
+import com.blog.proyecto_blog.application.usescases.dto.request.CommentUpdateRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.ICommentInterface;
 import com.blog.proyecto_blog.domain.services.interfaces.ICommentService;
@@ -44,7 +45,7 @@ public class CommentController {
     @PutMapping("update/{id}")
     public ResponseEntity<CommentSimpleResponse> updateComment(
             @PathVariable Long id,
-            @RequestBody CommentRequest request
+            @RequestBody CommentUpdateRequest request
     ) {
         return ResponseEntity.ok(commentInterface.updateComment(id, request));
     }

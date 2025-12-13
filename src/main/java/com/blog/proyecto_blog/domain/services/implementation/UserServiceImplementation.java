@@ -9,6 +9,7 @@ import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.RolRepository;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +21,25 @@ public class UserServiceImplementation implements IUserService {
     private final UserRepository userRepository;
     private final RolRepository rolRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public UserResponse createUserServices(UserRequest request) {
-        // 1️⃣ Buscar el rol
+        // Buscar el rol
         RolEntity rolEntity = rolRepository.findById(request.getRolId())
                 .orElseThrow(() -> new RuntimeException("El rol no existe"));
 
-        // 2️⃣ Mapear request → entity
+        // Mapear request → entity
         UserEntity entity = userMapper.toEntity(request, rolEntity);
 
-        // 3️⃣ Guardar en DB
+        // Encriptamos la password
+        entity.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        //Guardar en DB
         UserEntity saved = userRepository.save(entity);
 
-        // 4️⃣ Convertir entity → response
+        //Convertir entity → response
         return userMapper.toResponse(saved);
     }
 
@@ -50,8 +55,12 @@ public class UserServiceImplementation implements IUserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setDescription(request.getDescription());
-        user.setPassword(request.getPassword()); // luego lo encriptaremos
-        user.setRol(rol);
+        user.setPassword(request.getPassword());
+        //user.setRol(rol);
+
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
 
         UserEntity updated = userRepository.save(user);
 

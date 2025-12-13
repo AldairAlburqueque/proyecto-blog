@@ -1,7 +1,7 @@
 package com.blog.proyecto_blog.domain.services.implementation;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.CommentRequest;
-import com.blog.proyecto_blog.application.usescases.dto.response.CommentResponse;
+import com.blog.proyecto_blog.application.usescases.dto.request.CommentUpdateRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.CommentMapper;
 import com.blog.proyecto_blog.domain.services.interfaces.ICommentService;
@@ -41,19 +41,11 @@ public class CommentServiceImplementation implements ICommentService {
     }
 
     @Override
-    public CommentSimpleResponse updateCommentService(Long id, CommentRequest request) {
+    public CommentSimpleResponse updateCommentService(Long id, CommentUpdateRequest request) {
         CommentEntity entity = commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
 
-        // actualizar texto
         entity.setComment(request.getComment());
-
-        // opcionalmente actualizar usuario
-        if (request.getUserId() != null) {
-            UserEntity user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User no encontrado"));
-            entity.setUser(user);
-        }
 
         CommentEntity updated = commentRepository.save(entity);
 

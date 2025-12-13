@@ -7,9 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoleMapper {
 
-    // -------------------------------
-    // RolEntity -> RolResponse
-    // -------------------------------
+    //RolEntity -> RolResponse
     public RolResponse toResponse(RolEntity entity) {
         if (entity == null) return null;
 

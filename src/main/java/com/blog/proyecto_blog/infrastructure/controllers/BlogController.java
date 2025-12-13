@@ -21,9 +21,7 @@ public class BlogController {
         return ResponseEntity.ok(iBlogInterface.createBlog(request));
     }
 
-    // --------------------
     // UPDATE
-    // --------------------
     @PutMapping("/update/{id}")
     public ResponseEntity<BlogResponse> updateBlog(
             @PathVariable Long id,
@@ -32,42 +30,33 @@ public class BlogController {
         return ResponseEntity.ok(iBlogInterface.updateBlog(id, request));
     }
 
-    // --------------------
     // DELETE
-    // --------------------
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBlog(@PathVariable Long id) {
         iBlogInterface.deleteBlog(id);
         return ResponseEntity.ok("Blog eliminado correctamente");
     }
 
-    // --------------------
+
     // GET BY ID
-    // --------------------
     @GetMapping("/{id}")
     public ResponseEntity<BlogResponse> getBlogById(@PathVariable Long id) {
         return ResponseEntity.ok(iBlogInterface.getBlogById(id));
     }
 
-    // --------------------
     // LIST ALL
-    // --------------------
     @GetMapping("/list")
     public ResponseEntity<List<BlogResponse>> getAllBlogs() {
         return ResponseEntity.ok(iBlogInterface.getAllBlogs());
     }
 
-    // --------------------
     // LIST BY USER
-    // --------------------
     @GetMapping("/list/{userId}")
     public ResponseEntity<List<BlogResponse>> getBlogsByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(iBlogInterface.getBlogByUser(userId));
     }
 
-    // --------------------
     // LIST BY CATEGORY
-    // --------------------
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<BlogResponse>> getBlogsByCategory(@PathVariable Long categoryId) {
         return ResponseEntity.ok(iBlogInterface.getBlogByCategory(categoryId));
