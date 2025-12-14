@@ -22,10 +22,10 @@ public class WebSecurityCongif {
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints públicos
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/user/save").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/blog/list").permitAll() // ejemplo para blogs públicos
+                        .requestMatchers(HttpMethod.GET, "/blog/list").permitAll()
 
                         // Endpoints de administración
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/list", "/category/save", "/category/update").hasRole("Admin")
 
                         // Cualquier otro endpoint requiere autenticación
                         .anyRequest().authenticated()

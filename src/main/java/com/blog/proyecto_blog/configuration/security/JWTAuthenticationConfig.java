@@ -3,7 +3,6 @@ package com.blog.proyecto_blog.configuration.security;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.SignatureAlgorithm;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;

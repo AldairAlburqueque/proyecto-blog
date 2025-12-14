@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class BlogRequest {
     private String title;
     private String content;
-    private Long userId;
     private Long categoryId;
 }

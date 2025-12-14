@@ -12,6 +12,7 @@ import com.blog.proyecto_blog.infrastructure.database.repositories.BlogRepositor
 import com.blog.proyecto_blog.infrastructure.database.repositories.CommentRepository;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +28,13 @@ public class CommentServiceImplementation implements ICommentService {
 
     @Override
     public CommentSimpleResponse createCommnetService(CommentRequest request) {
-        UserEntity user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
 
         BlogEntity blog = blogRepository.findById(request.getBlogId())
                 .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
@@ -42,22 +48,55 @@ public class CommentServiceImplementation implements ICommentService {
 
     @Override
     public CommentSimpleResponse updateCommentService(Long id, CommentUpdateRequest request) {
-        CommentEntity entity = commentRepository.findById(id)
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        UserEntity currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+
+        CommentEntity comment = commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
 
-        entity.setComment(request.getComment());
+        if (!comment.getUser().getIdUser().equals(currentUser.getIdUser())) {
+            throw new RuntimeException("No tienes permiso para editar este comentario");
+        }
 
-        CommentEntity updated = commentRepository.save(entity);
+        comment.setComment(request.getComment());
+
+        CommentEntity updated = commentRepository.save(comment);
 
         return commentMapper.toResponse(updated);
     }
 
     @Override
     public void deleteCommentService(Long id) {
-        if (!commentRepository.existsById(id)) {
-            throw new RuntimeException("Comentario no encontrado");
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        UserEntity currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+
+        CommentEntity comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+
+        boolean isCommentOwner =
+                comment.getUser().getIdUser().equals(currentUser.getIdUser());
+
+        boolean isBlogOwner =
+                comment.getBlog().getUser().getIdUser().equals(currentUser.getIdUser());
+
+        boolean isAdmin =
+                currentUser.getRol().getRol().equals("ROLE_ADMIN");
+
+        if (!isCommentOwner && !isBlogOwner && !isAdmin) {
+            throw new RuntimeException("No tienes permiso para eliminar este comentario");
         }
-        commentRepository.deleteById(id);
+
+        commentRepository.delete(comment);
     }
 
     @Override

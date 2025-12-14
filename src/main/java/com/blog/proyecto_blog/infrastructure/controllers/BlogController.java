@@ -34,7 +34,7 @@ public class BlogController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBlog(@PathVariable Long id) {
         iBlogInterface.deleteBlog(id);
-        return ResponseEntity.ok("Blog eliminado correctamente");
+        return ResponseEntity.noContent().build();
     }
 
 

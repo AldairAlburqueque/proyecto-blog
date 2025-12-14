@@ -12,6 +12,7 @@ import com.blog.proyecto_blog.infrastructure.database.repositories.BlogRepositor
 import com.blog.proyecto_blog.infrastructure.database.repositories.CategoryRepository;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +28,13 @@ public class BlogServiceImplementation implements IBlogService {
 
     @Override
     public BlogResponse createBlogService(BlogRequest request) {
-        UserEntity author = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        UserEntity author = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
 
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
@@ -42,11 +48,20 @@ public class BlogServiceImplementation implements IBlogService {
 
     @Override
     public BlogResponse updateBlogService(Long id, BlogRequest request) {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
         BlogEntity blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
 
-        UserEntity author = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserEntity author = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+
+        if (!blog.getUser().getIdUser().equals(author.getIdUser())){
+            throw new RuntimeException("No tienes permiso para editar este blog");
+        }
 
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
@@ -54,7 +69,6 @@ public class BlogServiceImplementation implements IBlogService {
         // Actualizar valores
         blog.setTitle(request.getTitle());
         blog.setContent(request.getContent());
-        blog.setUser(author);
         blog.setCategory(category);
 
         BlogEntity updated = blogRepository.save(blog);
@@ -81,8 +95,20 @@ public class BlogServiceImplementation implements IBlogService {
 
     @Override
     public void deleteBlogService(Long id) {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
         BlogEntity blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
+
+        UserEntity author = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+
+        if (!blog.getUser().getIdUser().equals(author.getIdUser())) {
+            throw new RuntimeException("No tienes permiso para eliminar este blog");
+        }
 
         blogRepository.delete(blog);
     }
