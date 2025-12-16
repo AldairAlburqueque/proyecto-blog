@@ -4,6 +4,9 @@ import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IBlogInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,18 +48,26 @@ public class BlogController {
     }
 
     // LIST ALL
+//    @GetMapping("/list")
+//    public ResponseEntity<List<BlogResponse>> getAllBlogs() {
+//        return ResponseEntity.ok(iBlogInterface.getAllBlogs());
+//    }
     @GetMapping("/list")
-    public ResponseEntity<List<BlogResponse>> getAllBlogs() {
-        return ResponseEntity.ok(iBlogInterface.getAllBlogs());
+    public ResponseEntity<Page<BlogResponse>> getAllBlogs(
+            @PageableDefault(size = 5, sort = "createdAt")Pageable pageable
+            ) {
+        return ResponseEntity.ok(iBlogInterface.getAllBlogs(pageable));
     }
 
-    // LIST BY USER
-    @GetMapping("/list/{userId}")
-    public ResponseEntity<List<BlogResponse>> getBlogsByUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(iBlogInterface.getBlogByUser(userId));
+    // LISTAR POR USER
+    @GetMapping("/me")
+    public ResponseEntity<Page<BlogResponse>> getBlogsByUser(
+            @PageableDefault(size = 5, sort = "createdAt")Pageable pageable
+    ) {
+        return ResponseEntity.ok(iBlogInterface.getBlogByUser(pageable));
     }
 
-    // LIST BY CATEGORY
+    // LISTAR POR CATEGORY
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<BlogResponse>> getBlogsByCategory(@PathVariable Long categoryId) {
         return ResponseEntity.ok(iBlogInterface.getBlogByCategory(categoryId));

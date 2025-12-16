@@ -2,7 +2,6 @@ package com.blog.proyecto_blog.domain.services.implementation;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
-import com.blog.proyecto_blog.application.usescases.interfaces.IBlogInterface;
 import com.blog.proyecto_blog.application.usescases.mappers.BlogMapper;
 import com.blog.proyecto_blog.domain.services.interfaces.IBlogService;
 import com.blog.proyecto_blog.infrastructure.database.entity.BlogEntity;
@@ -12,6 +11,8 @@ import com.blog.proyecto_blog.infrastructure.database.repositories.BlogRepositor
 import com.blog.proyecto_blog.infrastructure.database.repositories.CategoryRepository;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -85,12 +86,18 @@ public class BlogServiceImplementation implements IBlogService {
     }
 
     @Override
-    public List<BlogResponse> getAllBlogsService() {
-        return blogRepository.findAll()
-                .stream()
-                .map(blogMapper::toResponse)
-                .toList();
+    public Page<BlogResponse> getAllBlogsService(Pageable pageable) {
+        return blogRepository.findAll(pageable)
+                .map(blogMapper::toResponse);
     }
+
+//    @Override
+//    public List<BlogResponse> getAllBlogsService() {
+//        return blogRepository.findAll()
+//                .stream()
+//                .map(blogMapper::toResponse)
+//                .toList();
+//    }
 
 
     @Override
@@ -113,19 +120,39 @@ public class BlogServiceImplementation implements IBlogService {
         blogRepository.delete(blog);
     }
 
+//    @Override
+//    public List<BlogResponse> getBlogByUserService(Long userId) {
+//        return blogRepository.findByUserIdUser(userId)
+//                .stream()
+//                .map(blogMapper::toResponse)
+//                .toList();
+//    }
+
     @Override
-    public List<BlogResponse> getBlogByUserService(Long userId) {
-        return blogRepository.findByUserIdUser(userId)
+    public List<BlogResponse> getBlogByCategoryService(Long categoryId) {
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new RuntimeException("Categoria no encontrada");
+        }
+
+        return blogRepository.findByCategory_IdCategory(categoryId)
                 .stream()
                 .map(blogMapper::toResponse)
                 .toList();
     }
 
+    //probando traer los blogs del user logueado
     @Override
-    public List<BlogResponse> getBlogByCategoryService(Long categoryId) {
-        return blogRepository.findByCategory_IdCategory(categoryId)
-                .stream()
-                .map(blogMapper::toResponse)
-                .toList();
+    public Page<BlogResponse> getBlogByUserService( Pageable pageable) {
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+
+        Page<BlogEntity> blogsPage = blogRepository.findByUser(user, pageable);
+
+        return blogsPage.map(blogMapper::toResponse);
     }
 }
