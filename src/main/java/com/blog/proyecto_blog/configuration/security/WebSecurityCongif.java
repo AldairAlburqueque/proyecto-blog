@@ -25,7 +25,7 @@ public class WebSecurityCongif {
                         .requestMatchers(HttpMethod.GET, "/blog/list","/category/list", "/blog/category/**").permitAll()
 
                         // Endpoints de administración
-                        .requestMatchers("/user/list", "/category/save", "/category/update").hasRole("ADMIN")
+                        .requestMatchers("/user/list", "/category/save", "/category/update").hasRole("Admin")
 
                         // Cualquier otro endpoint requiere autenticación
                         .anyRequest().authenticated()
