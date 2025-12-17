@@ -6,6 +6,7 @@ import com.blog.proyecto_blog.application.usescases.dto.response.CommentResponse
 import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.ICommentInterface;
 import com.blog.proyecto_blog.domain.services.interfaces.ICommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public class CommentController {
     // Crear comentario
     @PostMapping("/save")
     public ResponseEntity<CommentSimpleResponse> createComment(
+            @Valid
             @RequestBody CommentRequest request
     ) {
         CommentSimpleResponse response = commentInterface.createCommnet(request);
@@ -48,7 +50,7 @@ public class CommentController {
     @PutMapping("update/{id}")
     public ResponseEntity<CommentSimpleResponse> updateComment(
             @PathVariable Long id,
-            @RequestBody CommentUpdateRequest request
+            @Valid @RequestBody CommentUpdateRequest request
     ) {
         return ResponseEntity.ok(commentInterface.updateComment(id, request));
     }

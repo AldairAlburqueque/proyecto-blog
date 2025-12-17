@@ -3,6 +3,7 @@ package com.blog.proyecto_blog.infrastructure.controllers;
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IBlogInterface;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class BlogController {
 
     // CREATE
     @PostMapping("/create")
-    public ResponseEntity<BlogResponse> createBlog(@RequestBody BlogRequest request) {
+    public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request) {
         BlogResponse response = iBlogInterface.createBlog(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -30,7 +31,7 @@ public class BlogController {
     @PutMapping("/update/{id}")
     public ResponseEntity<BlogResponse> updateBlog(
             @PathVariable Long id,
-            @RequestBody BlogRequest request
+            @Valid @RequestBody BlogRequest request
     ) {
         return ResponseEntity.ok(iBlogInterface.updateBlog(id, request));
     }

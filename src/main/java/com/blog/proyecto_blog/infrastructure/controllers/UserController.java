@@ -31,7 +31,7 @@ public class UserController {
     @PutMapping("update/{id}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable String id,
-            @RequestBody UserRequest request
+            @Valid @RequestBody UserRequest request
     ) {
         Long idUser = Long.parseLong(id);
         return ResponseEntity.ok(userInterface.updateUser(idUser, request));
