@@ -8,6 +8,7 @@ import com.blog.proyecto_blog.application.usescases.interfaces.IUserInterface;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,8 @@ public class UserController {
 
     @PostMapping("/save")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(userInterface.createUser(userRequest));
+        UserResponse response = userInterface.createUser(userRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("update/{id}")

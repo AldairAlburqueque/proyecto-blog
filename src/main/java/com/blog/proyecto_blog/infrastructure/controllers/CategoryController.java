@@ -6,6 +6,7 @@ import com.blog.proyecto_blog.application.usescases.dto.response.CategoryRespons
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.ICategoryInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,8 @@ public class CategoryController {
 
     @PostMapping("/save")
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest request) {
-        return ResponseEntity.ok(iCategoryInterface.createCategory(request));
+        CategoryResponse response = iCategoryInterface.createCategory(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("update/{id}")
