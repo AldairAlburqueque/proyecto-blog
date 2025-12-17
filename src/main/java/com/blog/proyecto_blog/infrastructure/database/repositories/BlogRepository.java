@@ -16,4 +16,5 @@ public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
     List<BlogEntity> findByCategory_IdCategory(Long categoryId);
     //probando traer los blogs del usuario logeado
     Page<BlogEntity> findByUser(UserEntity user, Pageable pageable);
+    List<BlogEntity> findByTitleContainingIgnoreCase(String title);
 }

@@ -20,4 +20,5 @@ public interface IBlogService {
     List<BlogResponse> getBlogByCategoryService(Long categoryId);
     //Probando traer los blogs del usuario logueado
     Page<BlogResponse> getBlogByUserService( Pageable pageable);
+    List<BlogResponse> findByTitleContainingIgnoreCaseService(String title);
 }

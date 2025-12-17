@@ -55,4 +55,9 @@ public class BlogImplementation implements IBlogInterface {
     public List<BlogResponse> getBlogByCategory(Long categoryId) {
         return iBlogService.getBlogByCategoryService(categoryId);
     }
+
+    @Override
+    public List<BlogResponse> findByTitleContainingIgnoreCase(String title) {
+        return iBlogService.findByTitleContainingIgnoreCaseService(title);
+    }
 }

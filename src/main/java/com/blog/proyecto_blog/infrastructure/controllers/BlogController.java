@@ -73,4 +73,12 @@ public class BlogController {
         return ResponseEntity.ok(iBlogInterface.getBlogByCategory(categoryId));
     }
 
+    //BUSCAR POR TITLE
+    @GetMapping("/search")
+    public ResponseEntity<List<BlogResponse>> searchBlogs(
+            @RequestParam String title
+    ) {
+        return ResponseEntity.ok(iBlogInterface.findByTitleContainingIgnoreCase(title));
+    }
+
 }

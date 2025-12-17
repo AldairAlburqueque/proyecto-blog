@@ -17,4 +17,5 @@ public interface  IBlogInterface {
     void deleteBlog(Long id);
     Page<BlogResponse> getBlogByUser(Pageable pageable);
     List<BlogResponse> getBlogByCategory(Long categoryId);
+    List<BlogResponse> findByTitleContainingIgnoreCase(String title);
 }

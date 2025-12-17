@@ -155,4 +155,12 @@ public class BlogServiceImplementation implements IBlogService {
 
         return blogsPage.map(blogMapper::toResponse);
     }
+
+    @Override
+    public List<BlogResponse> findByTitleContainingIgnoreCaseService(String title) {
+        return blogRepository.findByTitleContainingIgnoreCase(title)
+                .stream()
+                .map(blogMapper::toResponse)
+                .toList();
+    }
 }
