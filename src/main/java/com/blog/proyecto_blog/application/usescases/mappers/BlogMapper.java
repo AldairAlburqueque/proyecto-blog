@@ -19,7 +19,6 @@ public class BlogMapper {
     private final CategoryMapper categoryMapper;
     private final CommentMapper commentMapper;
 
-    // Crear entidad desde request
     public BlogEntity toEntity(BlogRequest request, UserEntity user, CategoryEntity category) {
         if (request == null) return null;
 
@@ -32,8 +31,6 @@ public class BlogMapper {
         return entity;
     }
 
-
-    // Respuesta completa (BlogResponse)
     public BlogResponse toResponse(BlogEntity entity) {
         if (entity == null) return null;
 
@@ -43,17 +40,14 @@ public class BlogMapper {
         response.setContent(entity.getContent());
         response.setCreatedAt(entity.getCreatedAt());
 
-        // Mapea user simplificado
         response.setUser(userMapper.toSimple(entity.getUser()));
 
-        // Mapea category
         response.setCategory(categoryMapper.toResponse(entity.getCategory()));
 
-        // Mapea comentarios
         if (entity.getComments() != null) {
             response.setComments(
                     entity.getComments().stream()
-                            .map(commentMapper::toResponse) // usa CommentSimpleResponse
+                            .map(commentMapper::toResponse)
                             .toList()
             );
         }

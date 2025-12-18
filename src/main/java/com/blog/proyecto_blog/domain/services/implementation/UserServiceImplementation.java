@@ -26,20 +26,16 @@ public class UserServiceImplementation implements IUserService {
 
     @Override
     public UserResponse createUserServices(UserRequest request) {
-        // Buscar el rol
+
         RolEntity rolEntity = rolRepository.findById(request.getRolId())
                 .orElseThrow(() -> new RuntimeException("El rol no existe"));
 
-        // Mapear request → entity
         UserEntity entity = userMapper.toEntity(request, rolEntity);
 
-        // Encriptamos la password
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        //Guardar en DB
         UserEntity saved = userRepository.save(entity);
 
-        //Convertir entity → response
         return userMapper.toResponse(saved);
     }
 
@@ -51,7 +47,6 @@ public class UserServiceImplementation implements IUserService {
         RolEntity rol = rolRepository.findById(request.getRolId())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        // actualizar valores
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setDescription(request.getDescription());

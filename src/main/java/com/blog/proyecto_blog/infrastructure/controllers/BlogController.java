@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/blog")
 @RequiredArgsConstructor
+//@CrossOrigin(origins = "*")
 public class BlogController {
     private final IBlogInterface iBlogInterface;
 
@@ -57,7 +58,7 @@ public class BlogController {
 //    }
     @GetMapping("/list")
     public ResponseEntity<Page<BlogResponse>> getAllBlogs(
-            @PageableDefault(size = 5, sort = "createdAt")Pageable pageable
+            @PageableDefault(size = 12, sort = "createdAt")Pageable pageable
             ) {
         return ResponseEntity.ok(iBlogInterface.getAllBlogs(pageable));
     }

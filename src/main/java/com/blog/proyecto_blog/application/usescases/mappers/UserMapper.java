@@ -14,8 +14,6 @@ public class UserMapper {
 
     private final RoleMapper roleMapper;
 
-
-    // UserEntity
     public UserEntity toEntity(UserRequest request, RolEntity rol) {
         if (request == null) return null;
 
@@ -29,7 +27,6 @@ public class UserMapper {
         return entity;
     }
 
-    // UserResponse
     public UserResponse toResponse(UserEntity entity) {
         if (entity == null) return null;
 
@@ -45,8 +42,6 @@ public class UserMapper {
         return response;
     }
 
-
-    // UserSimpleResponse
     public UserSimpleResponse toSimple(UserEntity entity) {
         if (entity == null) return null;
 

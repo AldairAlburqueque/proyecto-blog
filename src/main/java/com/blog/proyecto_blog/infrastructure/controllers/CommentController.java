@@ -20,7 +20,7 @@ import java.util.List;
 public class CommentController {
     private final ICommentInterface commentInterface;
 
-    // Crear comentario
+
     @PostMapping("/save")
     public ResponseEntity<CommentSimpleResponse> createComment(
             @Valid
@@ -46,7 +46,6 @@ public class CommentController {
 //        return ResponseEntity.ok(commentInterface.getCommentById(id));
 //    }
 
-    // Actualizar comentario
     @PutMapping("update/{id}")
     public ResponseEntity<CommentSimpleResponse> updateComment(
             @PathVariable Long id,
@@ -55,7 +54,6 @@ public class CommentController {
         return ResponseEntity.ok(commentInterface.updateComment(id, request));
     }
 
-    // Eliminar comentario
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
         commentInterface.deleteComment(id);

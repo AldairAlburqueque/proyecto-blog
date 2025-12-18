@@ -67,7 +67,6 @@ public class BlogServiceImplementation implements IBlogService {
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        // Actualizar valores
         blog.setTitle(request.getTitle());
         blog.setContent(request.getContent());
         blog.setCategory(category);
@@ -140,7 +139,6 @@ public class BlogServiceImplementation implements IBlogService {
                 .toList();
     }
 
-    //probando traer los blogs del user logueado
     @Override
     public Page<BlogResponse> getBlogByUserService( Pageable pageable) {
         String email = SecurityContextHolder
