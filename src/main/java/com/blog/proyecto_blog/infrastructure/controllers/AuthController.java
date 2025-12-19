@@ -28,11 +28,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Usuario o contraseña incorrecta"));
+                .orElseThrow(() -> new RuntimeException("Email o contraseña incorrecta"));
 
         // Verificar contraseña
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Usuario o contraseña incorrecta");
+            throw new RuntimeException("Email o contraseña incorrecta");
         }
 
         String token = jwtConfig.getJWTToken(user);
