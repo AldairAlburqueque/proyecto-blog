@@ -9,6 +9,9 @@ import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.RolRepository;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -80,10 +83,24 @@ public class UserServiceImplementation implements IUserService {
 
     @Override
     public void deleteUserServices(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("Usuario no encontrado");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        UserEntity currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+
+        UserEntity userToDelete = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        boolean isSelf = currentUser.getIdUser().equals(userToDelete.getIdUser());
+
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_Admin"));
+
+        if (!isSelf && !isAdmin) {
+            throw new AccessDeniedException("No tienes permiso para eliminar este usuario");
         }
 
-        userRepository.deleteById(id);
+        userRepository.delete(userToDelete);
     }
 }

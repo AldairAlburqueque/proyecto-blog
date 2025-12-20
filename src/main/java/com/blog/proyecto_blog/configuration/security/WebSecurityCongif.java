@@ -28,11 +28,26 @@ public class WebSecurityCongif {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // Endpoints públicos
-                        .requestMatchers(HttpMethod.POST, "/auth/login", "/user/save").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/blog/list","/category/list", "/blog/*", "/blog/category/**", "/blog/search/**").permitAll()
+                        .requestMatchers(HttpMethod
+                                .POST,
+                                "/auth/login",
+                                "/user/save").permitAll()
+//                        .requestMatchers(HttpMethod
+//                                .GET,
+//                                "/blog/list",
+//                                "/category/list",
+//                                "/blog/*",
+//                                "/blog/category/**",
+//                                "/blog/search/**").permitAll()
 
                         // Endpoints de administración
-                        .requestMatchers("/user/list", "/category/save", "/category/update").hasRole("Admin")
+                        .requestMatchers(
+                                "/user/list",
+                                "/category/save",
+                                "/category/update",
+                                "/blog/delete/**",
+                                "/user/delete/**"
+                        ).hasRole("Admin")
 
                         .anyRequest().authenticated()
                 )

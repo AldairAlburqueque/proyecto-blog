@@ -12,6 +12,8 @@ import com.blog.proyecto_blog.infrastructure.database.repositories.BlogRepositor
 import com.blog.proyecto_blog.infrastructure.database.repositories.CommentRepository;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -72,10 +74,8 @@ public class CommentServiceImplementation implements ICommentService {
 
     @Override
     public void deleteCommentService(Long id) {
-        String email = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
 
         UserEntity currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
@@ -89,11 +89,11 @@ public class CommentServiceImplementation implements ICommentService {
         boolean isBlogOwner =
                 comment.getBlog().getUser().getIdUser().equals(currentUser.getIdUser());
 
-        boolean isAdmin =
-                currentUser.getRol().getRol().equals("ROLE_ADMIN");
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_Admin"));
 
         if (!isCommentOwner && !isBlogOwner && !isAdmin) {
-            throw new RuntimeException("No tienes permiso para eliminar este comentario");
+            throw new AccessDeniedException("No tienes permiso para eliminar este comentario");
         }
 
         commentRepository.delete(comment);

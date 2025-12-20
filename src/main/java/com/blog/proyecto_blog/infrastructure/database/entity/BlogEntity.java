@@ -32,7 +32,7 @@ public class BlogEntity {
     @ManyToOne
     @JoinColumn(name = "idCategory")
     private CategoryEntity category;
-    @OneToMany(mappedBy = "blog")
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     //@JsonIgnore
     private List<CommentEntity> comments = new ArrayList<>();
     @CreationTimestamp

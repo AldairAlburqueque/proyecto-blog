@@ -41,7 +41,7 @@ public class BlogController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBlog(@PathVariable Long id) {
         iBlogInterface.deleteBlog(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
 
@@ -66,7 +66,7 @@ public class BlogController {
     // LISTAR POR USER
     @GetMapping("/me")
     public ResponseEntity<Page<BlogResponse>> getBlogsByUser(
-            @PageableDefault(size = 5, sort = "createdAt")Pageable pageable
+            @PageableDefault(size = 12, sort = "createdAt")Pageable pageable
     ) {
         return ResponseEntity.ok(iBlogInterface.getBlogByUser(pageable));
     }

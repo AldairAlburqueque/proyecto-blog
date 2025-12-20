@@ -24,9 +24,9 @@ public class UserEntity {
     @ManyToOne
     @JoinColumn(name = "rolId")
     private RolEntity rol;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BlogEntity> blogs;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments;
     @Version
     private Long version;

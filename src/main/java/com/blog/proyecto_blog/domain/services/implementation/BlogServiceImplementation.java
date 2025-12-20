@@ -13,6 +13,8 @@ import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -101,19 +103,23 @@ public class BlogServiceImplementation implements IBlogService {
 
     @Override
     public void deleteBlogService(Long id) {
-        String email = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = auth.getName();
 
         BlogEntity blog = blogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
 
-        UserEntity author = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
 
-        if (!blog.getUser().getIdUser().equals(author.getIdUser())) {
-            throw new RuntimeException("No tienes permiso para eliminar este blog");
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_Admin"));
+
+        boolean isOwner = blog.getUser().getIdUser().equals(user.getIdUser());
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("No tienes permiso para eliminar este blog");
         }
 
         blogRepository.delete(blog);
