@@ -24,6 +24,7 @@ public class JWTAuthenticationConfig {
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
+                .claim("idUser", user.getIdUser())
                 .claim("name", user.getName())
                 .claim("role", user.getRol().getRol())
                 .claim("authorities", authorities.stream()
