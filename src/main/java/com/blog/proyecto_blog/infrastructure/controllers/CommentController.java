@@ -30,22 +30,6 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Obtener comentarios por blog
-//    @GetMapping("/list/{blogId}")
-//    public ResponseEntity<List<CommentSimpleResponse>> getCommentsByBlog(
-//            @PathVariable Long blogId
-//    ) {
-//        return ResponseEntity.ok(commentInterface.getCommentsByIdBlog(blogId));
-//    }
-
-    // Obtener comentario por ID
-//    @GetMapping("/{id}")
-//    public ResponseEntity<CommentSimpleResponse> getCommentById(
-//            @PathVariable Long id
-//    ) {
-//        return ResponseEntity.ok(commentInterface.getCommentById(id));
-//    }
-
     @PutMapping("update/{id}")
     public ResponseEntity<CommentSimpleResponse> updateComment(
             @PathVariable Long id,

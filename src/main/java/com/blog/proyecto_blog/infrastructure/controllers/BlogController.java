@@ -52,10 +52,6 @@ public class BlogController {
     }
 
     // LIST ALL
-//    @GetMapping("/list")
-//    public ResponseEntity<List<BlogResponse>> getAllBlogs() {
-//        return ResponseEntity.ok(iBlogInterface.getAllBlogs());
-//    }
     @GetMapping("/list")
     public ResponseEntity<Page<BlogResponse>> getAllBlogs(
             @PageableDefault(size = 12, sort = "createdAt")Pageable pageable

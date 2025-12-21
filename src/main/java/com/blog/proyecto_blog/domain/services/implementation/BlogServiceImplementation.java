@@ -92,15 +92,6 @@ public class BlogServiceImplementation implements IBlogService {
                 .map(blogMapper::toResponse);
     }
 
-//    @Override
-//    public List<BlogResponse> getAllBlogsService() {
-//        return blogRepository.findAll()
-//                .stream()
-//                .map(blogMapper::toResponse)
-//                .toList();
-//    }
-
-
     @Override
     public void deleteBlogService(Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -124,14 +115,6 @@ public class BlogServiceImplementation implements IBlogService {
 
         blogRepository.delete(blog);
     }
-
-//    @Override
-//    public List<BlogResponse> getBlogByUserService(Long userId) {
-//        return blogRepository.findByUserIdUser(userId)
-//                .stream()
-//                .map(blogMapper::toResponse)
-//                .toList();
-//    }
 
     @Override
     public List<BlogResponse> getBlogByCategoryService(Long categoryId) {

@@ -16,7 +16,6 @@ public interface IBlogService {
     //List<BlogResponse> getAllBlogsService();
     Page<BlogResponse> getAllBlogsService(Pageable pageable);
     void deleteBlogService(Long id);
-    //List<BlogResponse> getBlogByUserService(Long userId);
     List<BlogResponse> getBlogByCategoryService(Long categoryId);
     //Probando traer los blogs del usuario logueado
     Page<BlogResponse> getBlogByUserService( Pageable pageable);

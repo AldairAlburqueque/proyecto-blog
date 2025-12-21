@@ -12,7 +12,6 @@ public interface  IBlogInterface {
     BlogResponse createBlog(BlogRequest request);
     BlogResponse updateBlog(Long id, BlogRequest request);
     BlogResponse getBlogById(Long id);
-    //List<BlogResponse> getAllBlogs();
     Page<BlogResponse> getAllBlogs(Pageable pageable);
     void deleteBlog(Long id);
     Page<BlogResponse> getBlogByUser(Pageable pageable);

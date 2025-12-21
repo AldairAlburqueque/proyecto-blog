@@ -36,11 +36,6 @@ public class BlogImplementation implements IBlogInterface {
         return iBlogService.getAllBlogsService(pageable);
     }
 
-//    @Override
-//    public List<BlogResponse> getAllBlogs() {
-//        return iBlogService.getAllBlogsService();
-//    }
-
     @Override
     public void deleteBlog(Long id) {
         iBlogService.deleteBlogService(id);

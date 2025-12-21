@@ -35,9 +35,7 @@ public class UserMapper {
         response.setName(entity.getName());
         response.setEmail(entity.getEmail());
         response.setDescription(entity.getDescription());
-        //response.setRol(roleMapper.toResponse(entity.getRol());
         response.setRol(entity.getRol().getRol());
-        //response.setRolId(entity.getRol().getIdRol());
 
         return response;
     }
