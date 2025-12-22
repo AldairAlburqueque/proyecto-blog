@@ -44,7 +44,7 @@ public class WebSecurityCongif {
                         .requestMatchers(
                                 "/user/list",
                                 "/category/save",
-                                "/category/update"
+                                "/category/update/**"
                         ).hasRole("Admin")
 
                         .anyRequest().authenticated()
