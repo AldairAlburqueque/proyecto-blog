@@ -1,7 +1,6 @@
 package com.blog.proyecto_blog.infrastructure.database.entity;
 
 import com.blog.proyecto_blog.domain.enun.State;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

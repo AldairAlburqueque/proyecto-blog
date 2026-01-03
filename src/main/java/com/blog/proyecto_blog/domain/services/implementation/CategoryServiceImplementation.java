@@ -5,7 +5,6 @@ import com.blog.proyecto_blog.application.usescases.dto.response.CategoryRespons
 import com.blog.proyecto_blog.application.usescases.mappers.CategoryMapper;
 import com.blog.proyecto_blog.domain.services.interfaces.ICategoryService;
 import com.blog.proyecto_blog.infrastructure.database.entity.CategoryEntity;
-import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,6 @@
 package com.blog.proyecto_blog.application.usescases.mappers;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.CommentRequest;
-import com.blog.proyecto_blog.application.usescases.dto.response.CommentResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleResponse;
 import com.blog.proyecto_blog.infrastructure.database.entity.BlogEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.CommentEntity;

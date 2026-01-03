@@ -3,9 +3,7 @@ package com.blog.proyecto_blog.application.usescases.implementation;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IUserInterface;
-import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
 import com.blog.proyecto_blog.domain.services.interfaces.IUserService;
-import com.blog.proyecto_blog.infrastructure.database.repositories.RolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

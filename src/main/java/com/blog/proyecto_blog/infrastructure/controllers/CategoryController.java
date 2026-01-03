@@ -1,9 +1,7 @@
 package com.blog.proyecto_blog.infrastructure.controllers;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.CategoryRequest;
-import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.CategoryResponse;
-import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.ICategoryInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

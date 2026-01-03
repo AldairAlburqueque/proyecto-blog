@@ -32,13 +32,14 @@ public class WebSecurityCongif {
                                 .POST,
                                 "/auth/login",
                                 "/user/save").permitAll()
-//                        .requestMatchers(HttpMethod
-//                                .GET,
-//                                "/blog/list",
+                        .requestMatchers(HttpMethod
+                               .GET,
+                               "/blog/list"
 //                                "/category/list",
 //                                "/blog/*",
 //                                "/blog/category/**",
-//                                "/blog/search/**").permitAll()
+//                                "/blog/search/**"
+                              ).permitAll()
 
                         // Endpoints de administración
                         .requestMatchers(

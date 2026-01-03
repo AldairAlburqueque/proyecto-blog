@@ -1,11 +1,8 @@
 package com.blog.proyecto_blog.infrastructure.controllers;
 
-import com.blog.proyecto_blog.application.usescases.dto.request.LoginRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
-import com.blog.proyecto_blog.application.usescases.dto.response.LoginResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IUserInterface;
-import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
