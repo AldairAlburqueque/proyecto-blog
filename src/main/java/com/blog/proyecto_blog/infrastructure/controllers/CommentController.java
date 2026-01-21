@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final ICommentInterface commentInterface;
 
-
+    //Guardar comentario
     @PostMapping("/save")
     public ResponseEntity<CommentSimpleResponse> createComment(
             @Valid
