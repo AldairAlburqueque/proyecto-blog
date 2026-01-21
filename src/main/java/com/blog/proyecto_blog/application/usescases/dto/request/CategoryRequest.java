@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class CategoryRequest {
     @NotBlank(message = "La categoria es obligatoria")
     private String categoria;
-    @NotBlank(message = "La descripcion es obligatorio")
+    @NotBlank(message = "Debe de escribir una descripción")
     private String description;
 }
