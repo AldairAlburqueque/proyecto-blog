@@ -27,7 +27,7 @@ public class AuthController {
         UserEntity user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Email o contraseña incorrecta"));
 
-        // Verificar contraseña
+        // Verificar contraseña si es correcta
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Email o contraseña incorrecta");
         }
