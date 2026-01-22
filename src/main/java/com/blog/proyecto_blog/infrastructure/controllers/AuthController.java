@@ -2,7 +2,7 @@ package com.blog.proyecto_blog.infrastructure.controllers;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.LoginRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.LoginResponse;
-import com.blog.proyecto_blog.configuration.security.JWTAuthenticationConfig;
+import com.blog.proyecto_blog.infrastructure.configuration.security.JWTAuthenticationConfig;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import jakarta.validation.Valid;

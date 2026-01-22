@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.configuration.security;
+package com.blog.proyecto_blog.infrastructure.configuration.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.configuration.security;
+package com.blog.proyecto_blog.infrastructure.configuration.security;
 
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import io.jsonwebtoken.Claims;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
-import static com.blog.proyecto_blog.configuration.security.Constans.*;
+import static com.blog.proyecto_blog.infrastructure.configuration.security.Constans.*;
 
 
 @Component
