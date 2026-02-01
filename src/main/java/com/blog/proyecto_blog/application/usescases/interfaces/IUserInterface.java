@@ -6,7 +6,7 @@ import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import java.util.List;
 
 public interface IUserInterface {
-    UserResponse createUser(UserRequest request);
+//    UserResponse createUser(UserRequest request);
     UserResponse updateUser(Long id, UserRequest request);
     UserResponse getUserById(Long id);
     List<UserResponse> getAllUsers();

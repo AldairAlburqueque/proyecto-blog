@@ -14,10 +14,10 @@ import java.util.List;
 public class UserImplementation implements IUserInterface {
     private final IUserService iUserService;
 
-    @Override
-    public UserResponse createUser(UserRequest userRequest) {
-        return iUserService.createUserServices(userRequest);
-    }
+//    @Override
+//    public UserResponse createUser(UserRequest userRequest) {
+//        return iUserService.createUserServices(userRequest);
+//    }
 
     @Override
     public UserResponse updateUser(Long id, UserRequest userRequest) {

@@ -31,7 +31,8 @@ public class WebSecurityCongif {
                         .requestMatchers(HttpMethod
                                 .POST,
                                 "/auth/login",
-                                "/user/save").permitAll()
+                                //"/user/save").permitAll()
+                                "/auth/save").permitAll()
                         .requestMatchers(HttpMethod
                                .GET,
                                "/blog/list"
