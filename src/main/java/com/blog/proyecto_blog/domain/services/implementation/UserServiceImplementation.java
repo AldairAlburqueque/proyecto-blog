@@ -27,20 +27,20 @@ public class UserServiceImplementation implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    @Override
-    public UserResponse createUserServices(UserRequest request) {
-
-        RolEntity rolEntity = rolRepository.findById(request.getRolId())
-                .orElseThrow(() -> new RuntimeException("El rol no existe"));
-
-        UserEntity entity = userMapper.toEntity(request, rolEntity);
-
-        entity.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        UserEntity saved = userRepository.save(entity);
-
-        return userMapper.toResponse(saved);
-    }
+//    @Override
+//    public UserResponse createUserServices(UserRequest request) {
+//
+//        RolEntity rolEntity = rolRepository.findById(request.getRolId())
+//                .orElseThrow(() -> new RuntimeException("El rol no existe"));
+//
+//        UserEntity entity = userMapper.toEntity(request, rolEntity);
+//
+//        entity.setPassword(passwordEncoder.encode(request.getPassword()));
+//
+//        UserEntity saved = userRepository.save(entity);
+//
+//        return userMapper.toResponse(saved);
+//    }
 
     @Override
     public UserResponse updateUserServices(Long id, UserRequest request) {

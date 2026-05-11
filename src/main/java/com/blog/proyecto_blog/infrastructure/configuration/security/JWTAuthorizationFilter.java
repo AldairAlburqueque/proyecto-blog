@@ -19,6 +19,7 @@ import static com.blog.proyecto_blog.infrastructure.configuration.security.Const
 
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
+
     private Claims setSigninKey(HttpServletRequest request) {
         String jwtToken = request.getHeader(AUTHORIZATION_HEADER).replace(TOKEN_BEARER_PREFIX, "");
         return Jwts.parser().setSigningKey(getSigningKey(SUPER_SECRET_KEY)).build()
@@ -37,22 +38,28 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         return authenticationHeader != null && authenticationHeader.startsWith(TOKEN_BEARER_PREFIX);
     }
 
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain
+    ) throws IOException, ServletException {
+
         try {
             if (isJWTValid(request)) {
                 Claims claims = setSigninKey(request);
+
                 if (claims.get("authorities") != null) {
                     setAuthentication(claims);
-                } else {
-                    SecurityContextHolder.clearContext();
                 }
-            } else {
-                SecurityContextHolder.clearContext();
             }
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+            return;
         }
+
         chain.doFilter(request, response);
     }
+
 }

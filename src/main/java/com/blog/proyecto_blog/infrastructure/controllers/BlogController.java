@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/blog")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*")
 public class BlogController {
     private final IBlogInterface iBlogInterface;
 
@@ -57,7 +56,7 @@ public class BlogController {
             @PageableDefault(size = 12, sort = "createdAt")Pageable pageable
             ) {
         return ResponseEntity.ok(iBlogInterface.getAllBlogs(pageable));
-    }
+    } 
 
     // LISTAR POR USER
     @GetMapping("/me")
@@ -69,16 +68,16 @@ public class BlogController {
 
     // LISTAR POR CATEGORY
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<BlogResponse>> getBlogsByCategory(@PathVariable Long categoryId) {
-        return ResponseEntity.ok(iBlogInterface.getBlogByCategory(categoryId));
+    public ResponseEntity<Page<BlogResponse>> getBlogsByCategory(@PathVariable Long categoryId ,
+                 Pageable pageable) {
+        return ResponseEntity.ok(iBlogInterface.getBlogByCategory(categoryId, pageable));
     }
 
     //BUSCAR POR TITLE
     @GetMapping("/search")
-    public ResponseEntity<List<BlogResponse>> searchBlogs(
-            @RequestParam String title
+    public ResponseEntity<Page<BlogResponse>> searchBlogs(
+            @RequestParam String title, Pageable pageable
     ) {
-        return ResponseEntity.ok(iBlogInterface.findByTitleContainingIgnoreCase(title));
+        return ResponseEntity.ok(iBlogInterface.findByTitleContainingIgnoreCase(title, pageable));
     }
-
 }

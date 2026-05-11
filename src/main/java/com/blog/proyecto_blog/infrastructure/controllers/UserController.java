@@ -19,11 +19,11 @@ public class UserController {
     private final IUserInterface userInterface;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/save")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
-        UserResponse response = userInterface.createUser(userRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+//    @PostMapping("/save")
+//    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
+//        UserResponse response = userInterface.createUser(userRequest);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//    }
 
     @PutMapping("update/{id}")
     public ResponseEntity<UserResponse> updateUser(

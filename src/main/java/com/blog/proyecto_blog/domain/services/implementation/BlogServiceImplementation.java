@@ -117,15 +117,15 @@ public class BlogServiceImplementation implements IBlogService {
     }
 
     @Override
-    public List<BlogResponse> getBlogByCategoryService(Long categoryId) {
+    public Page<BlogResponse> getBlogByCategoryService(Long categoryId, Pageable pageable) {
         if (!categoryRepository.existsById(categoryId)) {
             throw new RuntimeException("Categoria no encontrada");
         }
 
-        return blogRepository.findByCategory_IdCategory(categoryId)
-                .stream()
-                .map(blogMapper::toResponse)
-                .toList();
+        return blogRepository.findByCategory_IdCategory(categoryId, pageable)
+                //.stream()
+                .map(blogMapper::toResponse);
+                //.toList();
     }
 
     @Override
@@ -144,10 +144,10 @@ public class BlogServiceImplementation implements IBlogService {
     }
 
     @Override
-    public List<BlogResponse> findByTitleContainingIgnoreCaseService(String title) {
-        return blogRepository.findByTitleContainingIgnoreCase(title)
-                .stream()
-                .map(blogMapper::toResponse)
-                .toList();
+    public Page<BlogResponse> findByTitleContainingIgnoreCaseService(String title, Pageable pageable) {
+        return blogRepository.findByTitleContainingIgnoreCase(title, pageable)
+                //.stream()
+                .map(blogMapper::toResponse);
+                //.toList();
     }
 }

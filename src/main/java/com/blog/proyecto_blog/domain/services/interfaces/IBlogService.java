@@ -14,8 +14,10 @@ public interface IBlogService {
     //List<BlogResponse> getAllBlogsService();
     Page<BlogResponse> getAllBlogsService(Pageable pageable);
     void deleteBlogService(Long id);
-    List<BlogResponse> getBlogByCategoryService(Long categoryId);
+    //List<BlogResponse> getBlogByCategoryService(Long categoryId);
+    Page<BlogResponse> getBlogByCategoryService(Long categoryId, Pageable pageable);
     //Probando traer los blogs del usuario logueado
     Page<BlogResponse> getBlogByUserService( Pageable pageable);
-    List<BlogResponse> findByTitleContainingIgnoreCaseService(String title);
+    //List<BlogResponse> findByTitleContainingIgnoreCaseService(String title);
+    Page<BlogResponse> findByTitleContainingIgnoreCaseService(String title, Pageable pageable);
 }
