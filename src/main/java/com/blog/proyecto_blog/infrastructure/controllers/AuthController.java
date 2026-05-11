@@ -30,24 +30,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-//        UserEntity user = userRepository.findByEmail(request.getEmail())
-//                .orElseThrow(() -> new RuntimeException("Email o contraseña incorrecta"));
-//
-//        // Verificar contraseña si es correcta
-//        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-//            throw new RuntimeException("Email o contraseña incorrecta");
-//        }
-//
-//        String token = jwtConfig.getJWTToken(user);
-//
-//        LoginResponse response = new LoginResponse(
-//                token,
-//                user.getEmail(),
-//                user.getName(),
-//                user.getRol().getRol()
-//        );
-//
-//        return ResponseEntity.ok(response);
         LoginResponse response = loginInterface.login(request);
         return  ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }

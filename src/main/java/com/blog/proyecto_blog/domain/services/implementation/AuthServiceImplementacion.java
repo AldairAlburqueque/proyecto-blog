@@ -42,10 +42,12 @@ public class AuthServiceImplementacion implements IAuthService {
         String token = jwtConfig.getJWTToken(user);
 
         return new LoginResponse(
+                user.getIdUser(),
                 token,
                 user.getEmail(),
                 user.getName(),
                 user.getRol().getRol()
+
         );
     }
 

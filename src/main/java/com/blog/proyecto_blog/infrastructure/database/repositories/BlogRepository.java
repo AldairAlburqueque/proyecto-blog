@@ -12,7 +12,9 @@ import java.util.List;
 @Repository
 public interface BlogRepository extends JpaRepository<BlogEntity, Long> {
     List<BlogEntity> findByUserIdUser(Long idUser);
-    List<BlogEntity> findByCategory_IdCategory(Long categoryId);
+    //List<BlogEntity> findByCategory_IdCategory(Long categoryId);
+    Page<BlogEntity> findByCategory_IdCategory(Long categoryId, Pageable pageable);
     Page<BlogEntity> findByUser(UserEntity user, Pageable pageable);
-    List<BlogEntity> findByTitleContainingIgnoreCase(String title);
+    //List<BlogEntity> findByTitleContainingIgnoreCase(String title);
+    Page<BlogEntity> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }
