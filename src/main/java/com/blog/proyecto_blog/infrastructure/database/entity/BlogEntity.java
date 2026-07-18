@@ -22,6 +22,7 @@ public class BlogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idBlog;
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     @Enumerated(EnumType.STRING)
     private State state;

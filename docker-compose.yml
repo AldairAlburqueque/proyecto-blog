@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # SERVICIO 1: Base de Datos (PostgreSQL)
+  # ==========================================
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: postgres_blog_container
+    environment:
+      POSTGRES_DB: blog
+      # Docker usará estos valores para crear la base de datos de fábrica
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres21
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - blog-network
+
+  # ==========================================
+  # SERVICIO 2: Tu Backend (Spring Boot)
+  # ==========================================
+  backend-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_backend_container
+    ports:
+      - "8080:8080"
+    environment:
+      # Inyectamos exactamente las variables que tu application.yml necesita
+      - username=postgres
+      - password=postgres21
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/blog
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=TRACE
+    depends_on:
+      - postgres-db
+    networks:
+      - blog-network
+
+networks:
+  blog-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

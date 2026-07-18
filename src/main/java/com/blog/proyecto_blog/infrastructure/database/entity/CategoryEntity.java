@@ -16,10 +16,12 @@ public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCategory;
+    @Column(unique = true)
     private String categoria;
     private String description;
     @OneToMany(mappedBy = "category")
     private List<BlogEntity> blogs;
     @Version
     private Long version;
+
 }

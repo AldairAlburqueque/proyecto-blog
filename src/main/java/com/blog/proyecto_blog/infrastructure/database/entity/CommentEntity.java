@@ -19,6 +19,7 @@ public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idComment;
+    @Column(columnDefinition = "TEXT")
     private String comment;
     @Enumerated(EnumType.STRING)
     private State state;
