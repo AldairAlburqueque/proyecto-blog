@@ -2,11 +2,14 @@ spring:
   application:
     name: proyecto-blog
   datasource:
-    url: jdbc:mysql://localhost:3306/blog
+#    url: jdbc:postgresql://localhost:5432/blog
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/blog}
     username: ${username}
     password: ${password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
       ddl-auto: update

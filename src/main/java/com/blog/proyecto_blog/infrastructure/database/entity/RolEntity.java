@@ -11,12 +11,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "rol")
+@Table(name = "roles")
 public class RolEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRol;
+    @Column(unique = true)
     private String rol;
     @OneToMany(mappedBy = "rol")
     private List<UserEntity> users;
+
 }

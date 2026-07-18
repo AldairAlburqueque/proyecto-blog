@@ -27,17 +27,17 @@ public class WebSecurityCongif {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // 1. PERMITIR TODAS LAS PETICIONES OPTIONS (CORS PREFLIGHT)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         // Endpoints públicos
-                        .requestMatchers(HttpMethod
-                                .POST,
+                        .requestMatchers(HttpMethod.POST,
                                 "/auth/login",
                                 "/auth/save").permitAll()
-                        .requestMatchers(HttpMethod
-                               .GET,
-                               "/blog/list",
-                               "/category/list"
-//                             "/blog/search/**"
-                              ).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/blog/list",
+                                "/category/list"
+                        ).permitAll()
 
                         // Endpoints de administración
                         .requestMatchers(
@@ -48,7 +48,7 @@ public class WebSecurityCongif {
 
                         .anyRequest().authenticated()
                 )
-                                .addFilterAfter(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
