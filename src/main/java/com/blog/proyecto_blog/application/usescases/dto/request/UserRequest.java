@@ -18,6 +18,6 @@ public class UserRequest {
     private String description;
     @NotBlank(message = "El password es obligatorio")
     private String password;
-    @NotNull(message = "El rol es obligatoria")
-    private Long rolId;
+//    @NotNull(message = "El rol es obligatoria")
+//    private Long rolId;
 }
