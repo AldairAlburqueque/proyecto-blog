@@ -53,15 +53,12 @@ public class AuthServiceImplementacion implements IAuthService {
 
     @Override
     public UserResponse createUserServices(UserRequest request) {
-        RolEntity rolEntity = rolRepository.findById(request.getRolId())
+        RolEntity userRol = rolRepository.findByRol("User")
               .orElseThrow(() -> new RuntimeException("El rol no existe"));
 
-       UserEntity entity = userMapper.toEntity(request, rolEntity);
-
+       UserEntity entity = userMapper.toEntity(request, userRol);
        entity.setPassword(passwordEncoder.encode(request.getPassword()));
-
        UserEntity saved = userRepository.save(entity);
-
-        return userMapper.toResponse(saved);
+       return userMapper.toResponse(saved);
     }
 }

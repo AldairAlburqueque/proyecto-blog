@@ -47,7 +47,7 @@ public class UserServiceImplementation implements IUserService {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        RolEntity rol = rolRepository.findById(request.getRolId())
+        RolEntity rol = rolRepository.findByRol("User")
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
         user.setName(request.getName());
