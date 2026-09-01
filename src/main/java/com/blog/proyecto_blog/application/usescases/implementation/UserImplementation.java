@@ -1,5 +1,6 @@
 package com.blog.proyecto_blog.application.usescases.implementation;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IUserInterface;
@@ -14,14 +15,9 @@ import java.util.List;
 public class UserImplementation implements IUserInterface {
     private final IUserService iUserService;
 
-//    @Override
-//    public UserResponse createUser(UserRequest userRequest) {
-//        return iUserService.createUserServices(userRequest);
-//    }
-
     @Override
-    public UserResponse updateUser(Long id, UserRequest userRequest) {
-        return iUserService.updateUserServices(id, userRequest);
+    public UserResponse updateOwnerProfile(UpdateProfileRequest request) {
+        return iUserService.updateOwnerProfileService(request);
     }
 
     @Override
@@ -37,5 +33,10 @@ public class UserImplementation implements IUserInterface {
     @Override
     public void deleteUser(Long id) {
         iUserService.deleteUserServices(id);
+    }
+
+    @Override
+    public UserResponse getCurrentUser() {
+        return iUserService.getCurrentUserService();
     }
 }

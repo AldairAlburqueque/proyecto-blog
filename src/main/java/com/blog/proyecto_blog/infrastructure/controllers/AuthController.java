@@ -28,7 +28,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = loginInterface.login(request);
-        return  ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+        return  ResponseEntity.ok(response);
     }
 
 }

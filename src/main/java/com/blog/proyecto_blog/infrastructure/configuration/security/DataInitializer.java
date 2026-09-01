@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -22,6 +23,8 @@ public class DataInitializer {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final BootstrapAdminProperties bootstrapAdminProperties;
 
     @Bean
     public CommandLineRunner initData() {
@@ -64,21 +67,37 @@ public class DataInitializer {
     }
 
     public void createAdmin() {
-        if (!userRepository.existsByRol_Rol("Admin")) {
-
-            RolEntity adminRol = rolRepository.findByRol("Admin")
-                    .orElseThrow(() -> new RuntimeException("El rol Admin no existe."));
-
-            UserEntity admin = new UserEntity();
-            admin.setName("Super Admin");
-            admin.setEmail("admin@gmail.com");
-            admin.setDescription("Solo se crea el super admin");
-            admin.setPassword(
-                    passwordEncoder.encode("123456")
-            );
-            admin.setRol(adminRol);
-
-            userRepository.save(admin);
+        if (!bootstrapAdminProperties.enabled()) {
+            return;
         }
+
+        if (!StringUtils.hasText(bootstrapAdminProperties.name())
+                || !StringUtils.hasText(bootstrapAdminProperties.email())
+                || !StringUtils.hasText(bootstrapAdminProperties.password())) {
+            throw new IllegalStateException(
+                    "El bootstrap de administrador está habilitado, "
+                            + "pero faltan sus variables de configuración"
+            );
+        }
+
+        if (userRepository.existsByRol_Rol("Admin")) {
+            return;
+        }
+
+        RolEntity adminRol = rolRepository.findByRol("Admin")
+                .orElseThrow(() ->
+                        new IllegalStateException("El rol Admin no existe")
+                );
+
+        UserEntity admin = new UserEntity();
+        admin.setName(bootstrapAdminProperties.name());
+        admin.setEmail(bootstrapAdminProperties.email());
+        admin.setDescription("Administrador inicial del sistema");
+        admin.setPassword(
+                passwordEncoder.encode(bootstrapAdminProperties.password())
+        );
+        admin.setRol(adminRol);
+
+        userRepository.save(admin);
     }
 }

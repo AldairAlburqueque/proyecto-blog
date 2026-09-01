@@ -1,5 +1,6 @@
 package com.blog.proyecto_blog.infrastructure.controllers;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IUserInterface;
@@ -19,19 +20,11 @@ public class UserController {
     private final IUserInterface userInterface;
     private final PasswordEncoder passwordEncoder;
 
-//    @PostMapping("/save")
-//    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
-//        UserResponse response = userInterface.createUser(userRequest);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//    }
-
-    @PutMapping("update/{id}")
+    @PutMapping("/me")
     public ResponseEntity<UserResponse> updateUser(
-            @PathVariable String id,
-            @Valid @RequestBody UserRequest request
+            @Valid @RequestBody UpdateProfileRequest request
     ) {
-        Long idUser = Long.parseLong(id);
-        return ResponseEntity.ok(userInterface.updateUser(idUser, request));
+        return ResponseEntity.ok(userInterface.updateOwnerProfile(request));
     }
 
     @GetMapping("/{id}")
@@ -50,5 +43,10 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userInterface.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser() {
+        return ResponseEntity.ok(userInterface.getCurrentUser());
     }
 }

@@ -1,21 +1,28 @@
 spring:
   application:
     name: proyecto-blog
+
   datasource:
-#    url: jdbc:postgresql://localhost:5432/blog
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/blog}
-    username: ${username}
-    password: ${password}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER}
+    access-token-ttl: ${JWT_ACCESS_TOKEN_TTL}
 
   app:
-    admin:
-      email : admin@gmail.com
-      password : "123456"
-      name : Administrador
+    bootstrap-admin:
+      enabled: ${BOOTSTRAP_ADMIN_ENABLED:false}
+      name: ${BOOTSTRAP_ADMIN_NAME:}
+      email : ${BOOTSTRAP_ADMIN_EMAIL:}
+      password : ${BOOTSTRAP_ADMIN_PASSWORD:}

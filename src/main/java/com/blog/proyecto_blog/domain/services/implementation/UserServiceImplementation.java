@@ -1,12 +1,13 @@
 package com.blog.proyecto_blog.domain.services.implementation;
 
-import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
+import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
+//import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
 import com.blog.proyecto_blog.domain.services.interfaces.IUserService;
-import com.blog.proyecto_blog.infrastructure.database.entity.RolEntity;
+
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
-import com.blog.proyecto_blog.infrastructure.database.repositories.RolRepository;
+
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,54 +23,101 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 public class UserServiceImplementation implements IUserService {
     private final UserRepository userRepository;
-    private final RolRepository rolRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-
 //    @Override
-//    public UserResponse createUserServices(UserRequest request) {
+//    public UserResponse updateUserServices(Long id, UserRequest request) {
+//        Authentication authentication =
+//                SecurityContextHolder.getContext().getAuthentication();
 //
-//        RolEntity rolEntity = rolRepository.findById(request.getRolId())
-//                .orElseThrow(() -> new RuntimeException("El rol no existe"));
+//        UserEntity currentUser = userRepository
+//                .findByEmail(authentication.getName())
+//                .orElseThrow(() ->
+//                        new RuntimeException("Usuario no autenticado")
+//                );
 //
-//        UserEntity entity = userMapper.toEntity(request, rolEntity);
+//        UserEntity userToUpdate = userRepository.findById(id)
+//                .orElseThrow(() ->
+//                        new RuntimeException("Usuario no encontrado")
+//                );
 //
-//        entity.setPassword(passwordEncoder.encode(request.getPassword()));
+//        boolean isOwner = currentUser.getIdUser()
+//                .equals(userToUpdate.getIdUser());
 //
-//        UserEntity saved = userRepository.save(entity);
 //
-//        return userMapper.toResponse(saved);
+//        if (!isOwner) {
+//            throw new AccessDeniedException(
+//                    "No tienes permiso para editar este usuario"
+//            );
+//        }
+//
+//        userToUpdate.setName(request.getName());
+//        userToUpdate.setEmail(request.getEmail());
+//        userToUpdate.setDescription(request.getDescription());
+//
+//        if (request.getPassword() != null
+//                && !request.getPassword().isBlank()) {
+//            userToUpdate.setPassword(
+//                    passwordEncoder.encode(request.getPassword())
+//            );
+//        }
+//
+//        UserEntity updated = userRepository.save(userToUpdate);
+//
+//        return userMapper.toResponse(updated);
 //    }
 
     @Override
-    public UserResponse updateUserServices(Long id, UserRequest request) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public UserResponse updateOwnerProfileService(UpdateProfileRequest request) {
 
-        RolEntity rol = rolRepository.findByRol("User")
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setDescription(request.getDescription());
-        user.setPassword(request.getPassword());
-        //user.setRol(rol);
+        UserEntity currentUser = userRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no autenticado"));
 
-        if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
+        currentUser.setName(request.getName());
+        currentUser.setDescription(request.getDescription());
 
-        UserEntity updated = userRepository.save(user);
+        UserEntity updatedUser = userRepository.save(currentUser);
 
-        return userMapper.toResponse(updated);
+        return userMapper.toResponse(updatedUser);
     }
 
     @Override
     public UserResponse getUserByIdServices(Long id) {
-        UserEntity entity = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return userMapper.toResponse(entity);
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        UserEntity currentUser = userRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no autenticado")
+                );
+
+        UserEntity requestedUser = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no encontrado")
+                );
+
+        boolean isOwner = currentUser.getIdUser()
+                .equals(requestedUser.getIdUser());
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority ->
+                        authority.getAuthority().equals("ROLE_Admin")
+                );
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException(
+                    "No tienes permiso para ver este perfil"
+            );
+        }
+
+        return userMapper.toResponse(requestedUser);
     }
 
     @Override
@@ -102,5 +150,18 @@ public class UserServiceImplementation implements IUserService {
         }
 
         userRepository.delete(userToDelete);
+    }
+
+    @Override
+    public UserResponse getCurrentUserService() {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        UserEntity currentUser = userRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no autenticado"));
+
+        return userMapper.toResponse(currentUser);
     }
 }

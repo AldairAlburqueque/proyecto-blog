@@ -13,6 +13,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import jakarta.servlet.DispatcherType;
+
 import java.util.Arrays;
 
 @EnableWebSecurity
@@ -26,7 +30,30 @@ public class WebSecurityCongif {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .sessionManagement(sesion ->
+                        sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, exception) ->
+                                response.sendError(
+                                        HttpServletResponse.SC_UNAUTHORIZED,
+                                        "Authenticacion requerida"
+                                )
+                        )
+                        .accessDeniedHandler((request, response, exception) ->
+                                response.sendError(
+                                        HttpServletResponse.SC_FORBIDDEN,
+                                        "No tienes permisos para realizar esta accion"
+                                )
+                        )
+                )
                 .authorizeHttpRequests(auth -> auth
+                                .dispatcherTypeMatchers(
+                                        DispatcherType.ERROR,
+                                        DispatcherType.FORWARD
+                                ).permitAll()
                         // 1. PERMITIR TODAS LAS PETICIONES OPTIONS (CORS PREFLIGHT)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -40,11 +67,26 @@ public class WebSecurityCongif {
                         ).permitAll()
 
                         // Endpoints de administración
-                        .requestMatchers(
-                                "/user/list",
-                                "/category/save",
-                                "/category/update/**"
-                        ).hasRole("Admin")
+//                        .requestMatchers(
+//                                "/user/list",
+//                                "/category/save",
+//                                "/category/update/**"
+//                        ).hasRole("Admin")
+
+                                .requestMatchers(HttpMethod.GET, "/user/me")
+                                .authenticated()
+
+                                .requestMatchers(HttpMethod.GET, "/user/**")
+                                .hasRole("Admin")
+
+                                .requestMatchers(HttpMethod.POST, "/category/save")
+                                .hasRole("Admin")
+
+                                .requestMatchers(HttpMethod.PUT, "/category/update/**")
+                                .hasRole("Admin")
+
+                                .requestMatchers(HttpMethod.DELETE, "/category/delete/**")
+                                .hasRole("Admin")
 
                         .anyRequest().authenticated()
                 )
@@ -64,7 +106,7 @@ public class WebSecurityCongif {
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(false);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

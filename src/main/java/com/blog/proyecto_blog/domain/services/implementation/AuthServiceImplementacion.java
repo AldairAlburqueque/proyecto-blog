@@ -6,6 +6,7 @@ import com.blog.proyecto_blog.application.usescases.dto.response.LoginResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IUserInterface;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
+import com.blog.proyecto_blog.domain.exceptions.InvalidCredentialsException;
 import com.blog.proyecto_blog.domain.services.interfaces.IAuthService;
 import com.blog.proyecto_blog.infrastructure.configuration.security.JWTAuthenticationConfig;
 import com.blog.proyecto_blog.infrastructure.database.entity.RolEntity;
@@ -14,6 +15,9 @@ import com.blog.proyecto_blog.infrastructure.database.repositories.RolRepository
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +29,27 @@ public class AuthServiceImplementacion implements IAuthService {
     private final UserRepository userRepository;
     private final JWTAuthenticationConfig jwtConfig;
     private final PasswordEncoder passwordEncoder;
-    private final IUserInterface userInterface;
     private final UserMapper userMapper;
     private final RolRepository rolRepository;
 
+    private final AuthenticationManager authenticationManager;
+
     @Override
     public LoginResponse loginService(LoginRequest request) {
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException exception) {
+            throw new InvalidCredentialsException();
+        }
+
         UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email o contraseña incorrecta"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         //Verificamos contraseña si es correcta
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
