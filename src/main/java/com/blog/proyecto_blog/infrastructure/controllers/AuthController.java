@@ -2,6 +2,7 @@ package com.blog.proyecto_blog.infrastructure.controllers;
 
 
 import com.blog.proyecto_blog.application.usescases.dto.request.LoginRequest;
+import com.blog.proyecto_blog.application.usescases.dto.request.RegisterUserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.LoginResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
@@ -20,7 +21,7 @@ public class AuthController {
     private final IAuthInterface loginInterface;
 
     @PostMapping("/save")
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody RegisterUserRequest userRequest) {
         UserResponse response = loginInterface.createUser(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

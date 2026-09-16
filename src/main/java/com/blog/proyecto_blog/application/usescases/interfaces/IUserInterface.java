@@ -1,5 +1,6 @@
 package com.blog.proyecto_blog.application.usescases.interfaces;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.ChangePasswordRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
@@ -13,4 +14,5 @@ public interface IUserInterface {
     List<UserResponse> getAllUsers();
     void deleteUser(Long id);
     UserResponse getCurrentUser();
+    void chageOwnPasswordService(ChangePasswordRequest request);
 }

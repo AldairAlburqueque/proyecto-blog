@@ -1,5 +1,6 @@
 package com.blog.proyecto_blog.application.usescases.implementation;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.ChangePasswordRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
@@ -38,5 +39,10 @@ public class UserImplementation implements IUserInterface {
     @Override
     public UserResponse getCurrentUser() {
         return iUserService.getCurrentUserService();
+    }
+
+    @Override
+    public void chageOwnPasswordService(ChangePasswordRequest request) {
+        iUserService.changeOwnPasswordService(request);
     }
 }

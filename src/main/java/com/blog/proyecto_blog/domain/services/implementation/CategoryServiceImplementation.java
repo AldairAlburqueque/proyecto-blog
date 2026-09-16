@@ -3,6 +3,7 @@ package com.blog.proyecto_blog.domain.services.implementation;
 import com.blog.proyecto_blog.application.usescases.dto.request.CategoryRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.CategoryResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.CategoryMapper;
+import com.blog.proyecto_blog.domain.exceptions.ResourceNotFoundException;
 import com.blog.proyecto_blog.domain.services.interfaces.ICategoryService;
 import com.blog.proyecto_blog.infrastructure.database.entity.CategoryEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.CategoryRepository;
@@ -27,7 +28,7 @@ public class CategoryServiceImplementation implements ICategoryService {
     @Override
     public CategoryResponse updateCategoryService(Long id, CategoryRequest request) {
         CategoryEntity db = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", id));
 
         db.setCategoria(request.getCategoria());
         db.setDescription(request.getDescription());
@@ -40,7 +41,7 @@ public class CategoryServiceImplementation implements ICategoryService {
     @Override
     public CategoryResponse getCategoryByIdService(Long id) {
         CategoryEntity entity = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria", id));
         return categoryMapper.toResponse(entity);
     }
 
@@ -54,6 +55,11 @@ public class CategoryServiceImplementation implements ICategoryService {
 
     @Override
     public void deleteCategoryService(Long id) {
-        categoryRepository.deleteById(id);
+        CategoryEntity category = categoryRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Categoria", id)
+                        );
+
+        categoryRepository.delete(category);
     }
 }

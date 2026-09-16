@@ -1,9 +1,11 @@
 package com.blog.proyecto_blog.domain.services.implementation;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.ChangePasswordRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
 //import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
+import com.blog.proyecto_blog.domain.exceptions.InvalidPasswordChangeException;
 import com.blog.proyecto_blog.domain.services.interfaces.IUserService;
 
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
@@ -163,5 +165,35 @@ public class UserServiceImplementation implements IUserService {
                         new RuntimeException("Usuario no autenticado"));
 
         return userMapper.toResponse(currentUser);
+    }
+
+    @Override
+    public void changeOwnPasswordService(ChangePasswordRequest request) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        UserEntity currentUser = userRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow(InvalidPasswordChangeException::new);
+
+        boolean currentPasswordMatches = passwordEncoder.matches(
+                request.getCurrentPassword(),
+                currentUser.getPassword()
+        );
+
+        boolean isSamePassword = passwordEncoder.matches(
+                request.getNewPassword(),
+                currentUser.getPassword()
+        );
+
+        if (!currentPasswordMatches || isSamePassword) {
+            throw new InvalidPasswordChangeException();
+        }
+
+        currentUser.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        userRepository.save(currentUser);
     }
 }

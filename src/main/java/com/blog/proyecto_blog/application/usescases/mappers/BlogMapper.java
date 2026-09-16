@@ -2,6 +2,7 @@ package com.blog.proyecto_blog.application.usescases.mappers;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
+import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.CategoryMapper;
 import com.blog.proyecto_blog.application.usescases.mappers.CommentMapper;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
@@ -53,5 +54,31 @@ public class BlogMapper {
         }
 
         return response;
+    }
+
+    public BlogSummaryResponse toSummaryResponse(BlogEntity entity) {
+        if (entity == null) return null;
+
+        BlogSummaryResponse response = new BlogSummaryResponse();
+        response.setIdBlog(entity.getIdBlog());
+        response.setTitle(entity.getTitle());
+        response.setContentPreview(toContentPreview(entity.getContent()));
+        response.setUser(userMapper.toSimple(entity.getUser()));
+        response.setCategory(categoryMapper.toResponse(entity.getCategory()));
+        response.setCreatedAt(entity.getCreatedAt());
+
+        return response;
+    }
+
+    private String toContentPreview(String content) {
+        if (content == null) return null;
+
+        int maximumLength = 240;
+
+        if (content.length() <= maximumLength) {
+            return content;
+        }
+
+        return content.substring(0, maximumLength) + "...";
     }
 }

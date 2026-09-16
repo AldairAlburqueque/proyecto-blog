@@ -1,5 +1,6 @@
 package com.blog.proyecto_blog.infrastructure.controllers;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.ChangePasswordRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
@@ -48,5 +49,14 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser() {
         return ResponseEntity.ok(userInterface.getCurrentUser());
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> changeOwnPassword(
+            @Valid @RequestBody ChangePasswordRequest request
+            ) {
+        userInterface.chageOwnPasswordService(request);
+
+        return ResponseEntity.noContent().build();
     }
 }

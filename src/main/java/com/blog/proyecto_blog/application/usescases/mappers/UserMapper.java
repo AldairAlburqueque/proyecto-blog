@@ -1,5 +1,6 @@
 package com.blog.proyecto_blog.application.usescases.mappers;
 
+import com.blog.proyecto_blog.application.usescases.dto.request.RegisterUserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserSimpleResponse;
@@ -14,7 +15,7 @@ public class UserMapper {
 
     private final RoleMapper roleMapper;
 
-    public UserEntity toEntity(UserRequest request, RolEntity rol) {
+    public UserEntity toEntity(RegisterUserRequest request, RolEntity rol) {
         if (request == null) return null;
 
         UserEntity entity = new UserEntity();
