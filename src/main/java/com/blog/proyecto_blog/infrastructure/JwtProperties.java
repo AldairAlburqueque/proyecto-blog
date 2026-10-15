@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.infrastructure.configuration.security;
+package com.blog.proyecto_blog.infrastructure;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 import javax.crypto.SecretKey;
 import java.time.Duration;
 
-//con los not hace q la app no arranque si falte un valor importante
 @Validated
 //conecta propiedades YAML con las campos de record
 @ConfigurationProperties(prefix = "security.jwt")

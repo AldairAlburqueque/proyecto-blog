@@ -6,6 +6,8 @@ import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleRe
 import com.blog.proyecto_blog.application.usescases.interfaces.ICommentInterface;
 import com.blog.proyecto_blog.domain.services.interfaces.ICommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class CommentImplementation implements ICommentInterface {
     }
 
     @Override
-    public List<CommentSimpleResponse> getCommentsByIdBlog(Long blogId) {
-        return iCommentService.getCommentsByIdBlogService(blogId);
+    public Page<CommentSimpleResponse> getCommentsByIdBlog(Long blogId, Pageable pageable) {
+        return iCommentService.getCommentsByIdBlogService(blogId, pageable);
     }
 }

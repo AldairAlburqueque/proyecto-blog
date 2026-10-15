@@ -1,9 +1,6 @@
 package com.blog.proyecto_blog.infrastructure.controllers.advice;
 
-import com.blog.proyecto_blog.domain.exceptions.EmailAlreadyInUseException;
-import com.blog.proyecto_blog.domain.exceptions.InvalidCredentialsException;
-import com.blog.proyecto_blog.domain.exceptions.InvalidPasswordChangeException;
-import com.blog.proyecto_blog.domain.exceptions.ResourceNotFoundException;
+import com.blog.proyecto_blog.domain.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.lang.module.ResolutionException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -151,5 +147,16 @@ public class GlobalExceptionHandler {
         problem.setTitle(title);
 
         return ResponseEntity.status(status).body(problem);
+    }
+
+    @ExceptionHandler(InvalidContentException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidContent(
+            InvalidContentException exception
+    ) {
+        return problem(
+                HttpStatus.BAD_REQUEST,
+                "Contenido inválido",
+                "El contenido no contiene texto permitido"
+        );
     }
 }

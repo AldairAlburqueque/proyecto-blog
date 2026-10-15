@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.infrastructure.configuration.security;
+package com.blog.proyecto_blog.infrastructure;
 
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import io.jsonwebtoken.Jwts;

@@ -3,9 +3,6 @@ package com.blog.proyecto_blog.application.usescases.mappers;
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
-import com.blog.proyecto_blog.application.usescases.mappers.CategoryMapper;
-import com.blog.proyecto_blog.application.usescases.mappers.CommentMapper;
-import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
 import com.blog.proyecto_blog.infrastructure.database.entity.BlogEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.CategoryEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
@@ -18,7 +15,6 @@ public class BlogMapper {
 
     private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
-    private final CommentMapper commentMapper;
 
     public BlogEntity toEntity(BlogRequest request, UserEntity user, CategoryEntity category) {
         if (request == null) return null;
@@ -44,14 +40,6 @@ public class BlogMapper {
         response.setUser(userMapper.toSimple(entity.getUser()));
 
         response.setCategory(categoryMapper.toResponse(entity.getCategory()));
-
-        if (entity.getComments() != null) {
-            response.setComments(
-                    entity.getComments().stream()
-                            .map(commentMapper::toResponse)
-                            .toList()
-            );
-        }
 
         return response;
     }

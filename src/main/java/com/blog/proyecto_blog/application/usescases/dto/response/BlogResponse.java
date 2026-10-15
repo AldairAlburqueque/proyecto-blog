@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +18,6 @@ public class BlogResponse {
     private String state;
     private UserSimpleResponse user;
     private CategoryResponse category;
-    private List<CommentSimpleResponse> comments;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

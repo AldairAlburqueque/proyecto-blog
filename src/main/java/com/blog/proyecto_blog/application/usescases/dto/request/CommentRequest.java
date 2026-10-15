@@ -2,6 +2,7 @@ package com.blog.proyecto_blog.application.usescases.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentRequest {
     @NotBlank(message = "El comentario es obligatorio")
+    @Size(
+            max = 2000,
+            message = "El comentario no puede superar 2000 caracteres"
+    )
     private String comment;
     @NotNull(message = "El blog es obligatoria")
     private Long blogId;

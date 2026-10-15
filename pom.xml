@@ -104,6 +104,12 @@
 			<artifactId>flyway-database-postgresql</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+			<artifactId>owasp-java-html-sanitizer</artifactId>
+			<version>20261011.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

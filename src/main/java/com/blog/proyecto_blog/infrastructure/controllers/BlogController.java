@@ -2,6 +2,7 @@ package com.blog.proyecto_blog.infrastructure.controllers;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
+import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IBlogInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class BlogController {
 
     // LIST ALL
     @GetMapping("/list")
-    public ResponseEntity<Page<BlogResponse>> getAllBlogs(
+    public ResponseEntity<Page<BlogSummaryResponse>> getAllBlogs(
             @PageableDefault(size = 12, sort = "createdAt")Pageable pageable
             ) {
         return ResponseEntity.ok(iBlogInterface.getAllBlogs(pageable));
@@ -60,7 +61,7 @@ public class BlogController {
 
     // LISTAR POR USER
     @GetMapping("/me")
-    public ResponseEntity<Page<BlogResponse>> getBlogsByUser(
+    public ResponseEntity<Page<BlogSummaryResponse>> getBlogsByUser(
             @PageableDefault(size = 12, sort = "createdAt")Pageable pageable
     ) {
         return ResponseEntity.ok(iBlogInterface.getBlogByUser(pageable));
@@ -68,14 +69,14 @@ public class BlogController {
 
     // LISTAR POR CATEGORY
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<Page<BlogResponse>> getBlogsByCategory(@PathVariable Long categoryId ,
+    public ResponseEntity<Page<BlogSummaryResponse>> getBlogsByCategory(@PathVariable Long categoryId ,
                  Pageable pageable) {
         return ResponseEntity.ok(iBlogInterface.getBlogByCategory(categoryId, pageable));
     }
 
     //BUSCAR POR TITLE
     @GetMapping("/search")
-    public ResponseEntity<Page<BlogResponse>> searchBlogs(
+    public ResponseEntity<Page<BlogSummaryResponse>> searchBlogs(
             @RequestParam String title, Pageable pageable
     ) {
         return ResponseEntity.ok(iBlogInterface.findByTitleContainingIgnoreCase(title, pageable));

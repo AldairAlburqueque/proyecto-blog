@@ -2,6 +2,7 @@ package com.blog.proyecto_blog.domain.services.interfaces;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
+import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,12 +13,12 @@ public interface IBlogService {
     BlogResponse updateBlogService(Long id, BlogRequest request);
     BlogResponse getBlogByIdService(Long id);
     //List<BlogResponse> getAllBlogsService();
-    Page<BlogResponse> getAllBlogsService(Pageable pageable);
+    Page<BlogSummaryResponse> getAllBlogsService(Pageable pageable);
     void deleteBlogService(Long id);
     //List<BlogResponse> getBlogByCategoryService(Long categoryId);
-    Page<BlogResponse> getBlogByCategoryService(Long categoryId, Pageable pageable);
+    Page<BlogSummaryResponse> getBlogByCategoryService(Long categoryId, Pageable pageable);
     //Probando traer los blogs del usuario logueado
-    Page<BlogResponse> getBlogByUserService( Pageable pageable);
+    Page<BlogSummaryResponse> getBlogByUserService( Pageable pageable);
     //List<BlogResponse> findByTitleContainingIgnoreCaseService(String title);
-    Page<BlogResponse> findByTitleContainingIgnoreCaseService(String title, Pageable pageable);
+    Page<BlogSummaryResponse> findByTitleContainingIgnoreCaseService(String title, Pageable pageable);
 }

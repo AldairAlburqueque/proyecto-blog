@@ -2,6 +2,7 @@ package com.blog.proyecto_blog.application.usescases.implementation;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
+import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
 import com.blog.proyecto_blog.application.usescases.interfaces.IBlogInterface;
 import com.blog.proyecto_blog.domain.services.interfaces.IBlogService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class BlogImplementation implements IBlogInterface {
     }
 
     @Override
-    public Page<BlogResponse> getAllBlogs(Pageable pageable) {
+    public Page<BlogSummaryResponse> getAllBlogs(Pageable pageable) {
         return iBlogService.getAllBlogsService(pageable);
     }
 
@@ -42,17 +43,17 @@ public class BlogImplementation implements IBlogInterface {
     }
 
     @Override
-    public Page<BlogResponse> getBlogByUser(Pageable pageable) {
+    public Page<BlogSummaryResponse> getBlogByUser(Pageable pageable) {
         return iBlogService.getBlogByUserService(pageable);
     }
 
     @Override
-    public Page<BlogResponse> getBlogByCategory(Long categoryId, Pageable pageable) {
+    public Page<BlogSummaryResponse> getBlogByCategory(Long categoryId, Pageable pageable) {
         return iBlogService.getBlogByCategoryService(categoryId, pageable);
     }
 
     @Override
-    public Page<BlogResponse> findByTitleContainingIgnoreCase(String title, Pageable pageable) {
+    public Page<BlogSummaryResponse> findByTitleContainingIgnoreCase(String title, Pageable pageable) {
         return iBlogService.findByTitleContainingIgnoreCaseService(title, pageable);
     }
 }

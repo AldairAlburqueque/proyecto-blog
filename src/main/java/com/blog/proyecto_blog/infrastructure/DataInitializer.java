@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.infrastructure.configuration.security;
+package com.blog.proyecto_blog.infrastructure;
 
 import com.blog.proyecto_blog.infrastructure.database.entity.CategoryEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.RolEntity;

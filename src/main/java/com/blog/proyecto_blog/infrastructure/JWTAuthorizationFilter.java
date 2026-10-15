@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.infrastructure.configuration.security;
+package com.blog.proyecto_blog.infrastructure;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -17,8 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
-import static com.blog.proyecto_blog.infrastructure.configuration.security.Constans.AUTHORIZATION_HEADER;
-import static com.blog.proyecto_blog.infrastructure.configuration.security.Constans.TOKEN_BEARER_PREFIX;
+import static com.blog.proyecto_blog.infrastructure.Constans.AUTHORIZATION_HEADER;
+import static com.blog.proyecto_blog.infrastructure.Constans.TOKEN_BEARER_PREFIX;
 
 @Component
 @RequiredArgsConstructor

@@ -7,7 +7,7 @@ import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
 import com.blog.proyecto_blog.domain.exceptions.InvalidCredentialsException;
 import com.blog.proyecto_blog.domain.services.interfaces.IAuthService;
-import com.blog.proyecto_blog.infrastructure.configuration.security.JWTAuthenticationConfig;
+import com.blog.proyecto_blog.infrastructure.JWTAuthenticationConfig;
 import com.blog.proyecto_blog.infrastructure.database.entity.RolEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.RolRepository;

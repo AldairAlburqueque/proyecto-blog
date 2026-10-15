@@ -2,8 +2,12 @@ package com.blog.proyecto_blog.domain.services.implementation;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.BlogRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
+import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.BlogMapper;
+import com.blog.proyecto_blog.domain.exceptions.InvalidContentException;
+import com.blog.proyecto_blog.domain.exceptions.ResourceNotFoundException;
 import com.blog.proyecto_blog.domain.services.interfaces.IBlogService;
+import com.blog.proyecto_blog.infrastructure.UserContentSanitizer;
 import com.blog.proyecto_blog.infrastructure.database.entity.BlogEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.CategoryEntity;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
@@ -17,8 +21,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class BlogServiceImplementation implements IBlogService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final BlogMapper blogMapper;
-
+    private final UserContentSanitizer userContentSanitizer;
 
     @Override
     public BlogResponse createBlogService(BlogRequest request) {
@@ -43,6 +46,8 @@ public class BlogServiceImplementation implements IBlogService {
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
         BlogEntity entity = blogMapper.toEntity(request, author, category);
+        entity.setTitle(sanitizePlainText(request.getTitle()));
+        entity.setContent(sanitizeMarkdown(request.getContent()));
 
         BlogEntity saved = blogRepository.save(entity);
 
@@ -69,8 +74,8 @@ public class BlogServiceImplementation implements IBlogService {
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        blog.setTitle(request.getTitle());
-        blog.setContent(request.getContent());
+        blog.setTitle(sanitizePlainText(request.getTitle()));
+        blog.setContent(sanitizeMarkdown(request.getContent()));
         blog.setCategory(category);
 
         BlogEntity updated = blogRepository.save(blog);
@@ -80,16 +85,16 @@ public class BlogServiceImplementation implements IBlogService {
 
     @Override
     public BlogResponse getBlogByIdService(Long id) {
-        BlogEntity blog = blogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
+        BlogEntity blog = blogRepository.findByIdBlog(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Blog", id));
 
         return blogMapper.toResponse(blog);
     }
 
     @Override
-    public Page<BlogResponse> getAllBlogsService(Pageable pageable) {
+    public Page<BlogSummaryResponse> getAllBlogsService(Pageable pageable) {
         return blogRepository.findAll(pageable)
-                .map(blogMapper::toResponse);
+                .map(blogMapper::toSummaryResponse);
     }
 
     @Override
@@ -117,19 +122,19 @@ public class BlogServiceImplementation implements IBlogService {
     }
 
     @Override
-    public Page<BlogResponse> getBlogByCategoryService(Long categoryId, Pageable pageable) {
+    public Page<BlogSummaryResponse> getBlogByCategoryService(Long categoryId, Pageable pageable) {
         if (!categoryRepository.existsById(categoryId)) {
             throw new RuntimeException("Categoria no encontrada");
         }
 
         return blogRepository.findByCategory_IdCategory(categoryId, pageable)
                 //.stream()
-                .map(blogMapper::toResponse);
+                .map(blogMapper::toSummaryResponse);
                 //.toList();
     }
 
     @Override
-    public Page<BlogResponse> getBlogByUserService( Pageable pageable) {
+    public Page<BlogSummaryResponse> getBlogByUserService( Pageable pageable) {
         String email = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -140,14 +145,34 @@ public class BlogServiceImplementation implements IBlogService {
 
         Page<BlogEntity> blogsPage = blogRepository.findByUser(user, pageable);
 
-        return blogsPage.map(blogMapper::toResponse);
+        return blogsPage.map(blogMapper::toSummaryResponse);
     }
 
     @Override
-    public Page<BlogResponse> findByTitleContainingIgnoreCaseService(String title, Pageable pageable) {
+    public Page<BlogSummaryResponse> findByTitleContainingIgnoreCaseService(String title, Pageable pageable) {
         return blogRepository.findByTitleContainingIgnoreCase(title, pageable)
                 //.stream()
-                .map(blogMapper::toResponse);
+                .map(blogMapper::toSummaryResponse);
                 //.toList();
+    }
+
+    private String sanitizeMarkdown(String content) {
+        String sanitized = userContentSanitizer.sanitizerMarkdown(content);
+
+        if (!StringUtils.hasText(sanitized)) {
+            throw new InvalidContentException();
+        }
+
+        return sanitized;
+    }
+
+    private String sanitizePlainText(String content) {
+        String sanitized = userContentSanitizer.sanitizerPlainText(content);
+
+        if (!StringUtils.hasText(sanitized)) {
+            throw new InvalidContentException();
+        }
+
+        return sanitized;
     }
 }

@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.infrastructure.configuration.security;
+package com.blog.proyecto_blog.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.blog.proyecto_blog.infrastructure.configuration.security;
+package com.blog.proyecto_blog.infrastructure;
 
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;

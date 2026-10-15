@@ -6,6 +6,11 @@ import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleRe
 import com.blog.proyecto_blog.application.usescases.interfaces.ICommentInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,4 +44,19 @@ public class CommentController {
         commentInterface.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/blog/{blogId}")
+    public ResponseEntity<Page<CommentSimpleResponse>> getCommentsByBlog(
+            @PathVariable Long blogId,
+            @PageableDefault(
+                    size = 20,
+                    sort = "createdAt",
+                    direction = Sort.Direction.DESC
+            ) Pageable pageable
+    ) {
+                return ResponseEntity.ok(
+                        commentInterface.getCommentsByIdBlog(blogId, pageable)
+                );
+    }
+
 }
