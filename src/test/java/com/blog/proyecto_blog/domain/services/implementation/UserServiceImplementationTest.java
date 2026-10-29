@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -73,5 +74,37 @@ class UserServiceImplementationTest {
                 .isInstanceOf(AccessDeniedException.class);
 
         verify(userRepository, never()).delete(any());
+    }
+
+    @Test
+    void shouldDeleteAnotherUserWhenCurrentUserIsAdmin() {
+        //Arrange
+        String email = "admin@blog.com";
+
+        UserEntity admin = new UserEntity();
+        admin.setIdUser(1L);
+
+        UserEntity userToDelete = new UserEntity();
+        userToDelete.setIdUser(2L);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        email,
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_Admin"))
+                )
+        );
+
+        when(userRepository.findByEmail(email))
+                .thenReturn(Optional.of(admin));
+
+        when(userRepository.findById(2L))
+                .thenReturn(Optional.of(userToDelete));
+
+        //Act
+        userService.deleteUserServices(2L);
+
+        //Assert
+        verify(userRepository).delete(userToDelete);
     }
 }
