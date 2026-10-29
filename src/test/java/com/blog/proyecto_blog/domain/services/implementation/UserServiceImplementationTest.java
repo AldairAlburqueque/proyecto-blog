@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplementationTest {
@@ -142,5 +143,87 @@ class UserServiceImplementationTest {
 
         verify(passwordEncoder, never()).encode(any());
         verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldNotChangePasswordWhenNewPasswordMatchesCurrentPassword() {
+        // Arrange
+        String email = "user@blog.com";
+        String encodedPassword = "encoded-current-password";
+
+        ChangePasswordRequest request = new ChangePasswordRequest(
+                "current-password",
+                "current-password"
+        );
+
+        UserEntity currentUser = new UserEntity();
+        currentUser.setPassword(encodedPassword);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(email, null)
+        );
+
+        when(userRepository.findByEmail(email))
+                .thenReturn(Optional.of(currentUser));
+
+        when(passwordEncoder.matches(
+                request.getCurrentPassword(),
+                encodedPassword
+        )).thenReturn(true);
+
+        when(passwordEncoder.matches(
+                request.getNewPassword(),
+                encodedPassword
+        )).thenReturn(true);
+
+        // Act + Assert
+        assertThatThrownBy(() -> userService.changeOwnPasswordService(request))
+                .isInstanceOf(InvalidPasswordChangeException.class);
+
+        verify(passwordEncoder, never()).encode(any());
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldChangePasswordWhenCurrentPasswordIsCorrectAndNewPasswordIsDifferent() {
+        // Arrange
+        String email = "user@blog.com";
+        String encodedCurrentPassword = "encoded-current-password";
+        String encodedNewPassword = "encoded-new-password";
+
+        ChangePasswordRequest request = new ChangePasswordRequest(
+                "current-password",
+                "new-secure-password"
+        );
+
+        UserEntity currentUser = new UserEntity();
+        currentUser.setPassword(encodedCurrentPassword);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(email, null)
+        );
+
+        when(userRepository.findByEmail(email))
+                .thenReturn(Optional.of(currentUser));
+
+        when(passwordEncoder.matches(
+                request.getCurrentPassword(),
+                encodedCurrentPassword
+        )).thenReturn(true);
+
+        when(passwordEncoder.matches(
+                request.getNewPassword(),
+                encodedCurrentPassword
+        )).thenReturn(false);
+
+        when(passwordEncoder.encode(request.getNewPassword()))
+                .thenReturn(encodedNewPassword);
+
+        // Act
+        userService.changeOwnPasswordService(request);
+
+        // Assert
+        assertThat(currentUser.getPassword()).isEqualTo(encodedNewPassword);
+        verify(userRepository).save(currentUser);
     }
 }
