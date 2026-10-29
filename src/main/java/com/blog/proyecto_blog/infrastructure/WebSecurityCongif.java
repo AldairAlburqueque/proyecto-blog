@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,6 +34,20 @@ public class WebSecurityCongif {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp.policyDirectives(
+                                "default-src 'none'; " +
+                                        "base-uri 'none'; " +
+                                        "form-action 'none'; " +
+                                        "frame-ancestors 'none'"
+                        ))
+                        .referrerPolicy(referrer -> referrer.policy(
+                                ReferrerPolicy.NO_REFERRER
+                        ))
+                        .permissionsPolicyHeader(permissions -> permissions.policy(
+                                "camera=(), microphone=(), geolocation=()"
+                        ))
+                )
                 .sessionManagement(sesion ->
                         sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions
@@ -65,13 +80,6 @@ public class WebSecurityCongif {
                                 "/blog/list",
                                 "/category/list"
                         ).permitAll()
-
-                        // Endpoints de administración
-//                        .requestMatchers(
-//                                "/user/list",
-//                                "/category/save",
-//                                "/category/update/**"
-//                        ).hasRole("Admin")
 
                                 .requestMatchers(HttpMethod.GET, "/user/me")
                                 .authenticated()
