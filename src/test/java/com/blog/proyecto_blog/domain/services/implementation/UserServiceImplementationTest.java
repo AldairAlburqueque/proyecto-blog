@@ -3,6 +3,9 @@ package com.blog.proyecto_blog.domain.services.implementation;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
+import com.blog.proyecto_blog.application.usescases.dto.request.ChangePasswordRequest;
+import com.blog.proyecto_blog.domain.exceptions.InvalidPasswordChangeException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +16,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -106,5 +108,39 @@ class UserServiceImplementationTest {
 
         //Assert
         verify(userRepository).delete(userToDelete);
+    }
+
+    @Test
+    void shouldNotChangePasswordWhenCurrentPasswordIsIncorrect() {
+        // Arrange
+        String email = "user@blog.com";
+        String encodedPassword = "encoded-current-password";
+
+        ChangePasswordRequest request = new ChangePasswordRequest(
+                "wrong-current-password",
+                "new-secure-password"
+        );
+
+        UserEntity currentUser = new UserEntity();
+        currentUser.setPassword(encodedPassword);
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(email, null)
+        );
+
+        when(userRepository.findByEmail(email))
+                .thenReturn(Optional.of(currentUser));
+
+        when(passwordEncoder.matches(
+                request.getCurrentPassword(),
+                encodedPassword
+        )).thenReturn(false);
+
+        // Act + Assert
+        assertThatThrownBy(() -> userService.changeOwnPasswordService(request))
+                .isInstanceOf(InvalidPasswordChangeException.class);
+
+        verify(passwordEncoder, never()).encode(any());
+        verify(userRepository, never()).save(any());
     }
 }
