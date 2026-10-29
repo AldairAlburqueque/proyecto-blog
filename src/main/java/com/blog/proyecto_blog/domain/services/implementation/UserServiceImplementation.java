@@ -2,13 +2,14 @@ package com.blog.proyecto_blog.domain.services.implementation;
 
 import com.blog.proyecto_blog.application.usescases.dto.request.ChangePasswordRequest;
 import com.blog.proyecto_blog.application.usescases.dto.request.UpdateProfileRequest;
-//import com.blog.proyecto_blog.application.usescases.dto.request.UserRequest;
 import com.blog.proyecto_blog.application.usescases.dto.response.UserResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.UserMapper;
 import com.blog.proyecto_blog.domain.exceptions.InvalidPasswordChangeException;
 import com.blog.proyecto_blog.domain.services.interfaces.IUserService;
 
 import com.blog.proyecto_blog.infrastructure.database.entity.UserEntity;
+import com.blog.proyecto_blog.domain.exceptions.InvalidCredentialsException;
+import com.blog.proyecto_blog.domain.exceptions.ResourceNotFoundException;
 
 import com.blog.proyecto_blog.infrastructure.database.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -78,8 +79,7 @@ public class UserServiceImplementation implements IUserService {
 
         UserEntity currentUser = userRepository
                 .findByEmail(authentication.getName())
-                .orElseThrow(() ->
-                        new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         currentUser.setName(request.getName());
         currentUser.setDescription(request.getDescription());
@@ -96,14 +96,10 @@ public class UserServiceImplementation implements IUserService {
 
         UserEntity currentUser = userRepository
                 .findByEmail(authentication.getName())
-                .orElseThrow(() ->
-                        new RuntimeException("Usuario no autenticado")
-                );
+                .orElseThrow(InvalidCredentialsException::new);
 
         UserEntity requestedUser = userRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Usuario no encontrado")
-                );
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
 
         boolean isOwner = currentUser.getIdUser()
                 .equals(requestedUser.getIdUser());
@@ -137,10 +133,10 @@ public class UserServiceImplementation implements IUserService {
         String email = auth.getName();
 
         UserEntity currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         UserEntity userToDelete = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
 
         boolean isSelf = currentUser.getIdUser().equals(userToDelete.getIdUser());
 
@@ -161,8 +157,7 @@ public class UserServiceImplementation implements IUserService {
 
         UserEntity currentUser = userRepository
                 .findByEmail(authentication.getName())
-                .orElseThrow(() ->
-                        new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         return userMapper.toResponse(currentUser);
     }
@@ -174,7 +169,7 @@ public class UserServiceImplementation implements IUserService {
 
         UserEntity currentUser = userRepository
                 .findByEmail(authentication.getName())
-                .orElseThrow(InvalidPasswordChangeException::new);
+                .orElseThrow(InvalidCredentialsException::new);
 
         boolean currentPasswordMatches = passwordEncoder.matches(
                 request.getCurrentPassword(),

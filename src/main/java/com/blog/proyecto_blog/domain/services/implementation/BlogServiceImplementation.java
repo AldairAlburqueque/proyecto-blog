@@ -5,6 +5,7 @@ import com.blog.proyecto_blog.application.usescases.dto.response.BlogResponse;
 import com.blog.proyecto_blog.application.usescases.dto.response.BlogSummaryResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.BlogMapper;
 import com.blog.proyecto_blog.domain.exceptions.InvalidContentException;
+import com.blog.proyecto_blog.domain.exceptions.InvalidCredentialsException;
 import com.blog.proyecto_blog.domain.exceptions.ResourceNotFoundException;
 import com.blog.proyecto_blog.domain.services.interfaces.IBlogService;
 import com.blog.proyecto_blog.infrastructure.UserContentSanitizer;
@@ -40,10 +41,13 @@ public class BlogServiceImplementation implements IBlogService {
                 .getName();
 
         UserEntity author = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Categoría",
+                        request.getCategoryId()
+                ));
 
         BlogEntity entity = blogMapper.toEntity(request, author, category);
         entity.setTitle(sanitizePlainText(request.getTitle()));
@@ -62,17 +66,20 @@ public class BlogServiceImplementation implements IBlogService {
                 .getName();
 
         BlogEntity blog = blogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Blog", id));
 
         UserEntity author = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         if (!blog.getUser().getIdUser().equals(author.getIdUser())){
-            throw new RuntimeException("No tienes permiso para editar este blog");
+            throw new AccessDeniedException("No tienes permiso para editar este blog");
         }
 
         CategoryEntity category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Categoría",
+                        request.getCategoryId()
+                ));
 
         blog.setTitle(sanitizePlainText(request.getTitle()));
         blog.setContent(sanitizeMarkdown(request.getContent()));
@@ -104,10 +111,10 @@ public class BlogServiceImplementation implements IBlogService {
         String email = auth.getName();
 
         BlogEntity blog = blogRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Blog", id));
 
         UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_Admin"));
@@ -124,13 +131,11 @@ public class BlogServiceImplementation implements IBlogService {
     @Override
     public Page<BlogSummaryResponse> getBlogByCategoryService(Long categoryId, Pageable pageable) {
         if (!categoryRepository.existsById(categoryId)) {
-            throw new RuntimeException("Categoria no encontrada");
+            throw new ResourceNotFoundException("Categoría", categoryId);
         }
 
         return blogRepository.findByCategory_IdCategory(categoryId, pageable)
-                //.stream()
                 .map(blogMapper::toSummaryResponse);
-                //.toList();
     }
 
     @Override

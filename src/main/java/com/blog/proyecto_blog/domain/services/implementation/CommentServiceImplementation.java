@@ -5,6 +5,7 @@ import com.blog.proyecto_blog.application.usescases.dto.request.CommentUpdateReq
 import com.blog.proyecto_blog.application.usescases.dto.response.CommentSimpleResponse;
 import com.blog.proyecto_blog.application.usescases.mappers.CommentMapper;
 import com.blog.proyecto_blog.domain.exceptions.InvalidContentException;
+import com.blog.proyecto_blog.domain.exceptions.InvalidCredentialsException;
 import com.blog.proyecto_blog.domain.exceptions.ResourceNotFoundException;
 import com.blog.proyecto_blog.domain.services.interfaces.ICommentService;
 import com.blog.proyecto_blog.infrastructure.UserContentSanitizer;
@@ -43,10 +44,13 @@ public class CommentServiceImplementation implements ICommentService {
                 .getName();
 
         UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         BlogEntity blog = blogRepository.findById(request.getBlogId())
-                .orElseThrow(() -> new RuntimeException("Blog no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Blog",
+                        request.getBlogId()
+                ));
 
         CommentEntity entity = commentMapper.toEntity(request, user, blog);
         entity.setComment(sanitizeComment(request.getComment()));
@@ -64,13 +68,18 @@ public class CommentServiceImplementation implements ICommentService {
                 .getName();
 
         UserEntity currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         CommentEntity comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Comentario",
+                        id
+                ));
 
         if (!comment.getUser().getIdUser().equals(currentUser.getIdUser())) {
-            throw new RuntimeException("No tienes permiso para editar este comentario");
+            throw new AccessDeniedException(
+                    "No tienes permiso para editar este comentario"
+            );
         }
 
         comment.setComment(sanitizeComment(request.getComment()));
@@ -86,10 +95,13 @@ public class CommentServiceImplementation implements ICommentService {
         String email = auth.getName();
 
         UserEntity currentUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no autenticado"));
+                .orElseThrow(InvalidCredentialsException::new);
 
         CommentEntity comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comentario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Comentario",
+                        id
+                ));
 
         boolean isCommentOwner =
                 comment.getUser().getIdUser().equals(currentUser.getIdUser());

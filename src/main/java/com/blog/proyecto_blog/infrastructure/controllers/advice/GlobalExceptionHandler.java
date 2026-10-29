@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -119,6 +120,18 @@ public class GlobalExceptionHandler {
                 HttpStatus.FORBIDDEN,
                 "Acceso denegado",
                 "No tienes permisos para realizar esta acción"
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ProblemDetail> handleTypeMismatch(
+            MethodArgumentTypeMismatchException exception
+    ) {
+        return problem(
+                HttpStatus.BAD_REQUEST,
+                "Parámetro inválido",
+                "El parámetro '" + exception.getName()
+                        + "' debe tener un formato válido"
         );
     }
 
