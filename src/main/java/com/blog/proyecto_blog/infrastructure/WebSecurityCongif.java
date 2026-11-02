@@ -19,12 +19,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import jakarta.servlet.DispatcherType;
 
 import java.util.Arrays;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class WebSecurityCongif {
+
     private final JWTAuthorizationFilter authorizationFilter;
+    private final CorsProperties corsProperties;
+    private final LoginRateLimiter loginRateLimiter;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -98,7 +103,17 @@ public class WebSecurityCongif {
 
                         .anyRequest().authenticated()
                 )
-                .addFilterAfter(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(
+                        new LoginRateLimitFilter(
+                                loginRateLimiter,
+                                objectMapper
+                        ),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterAfter(
+                        authorizationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
@@ -106,12 +121,7 @@ public class WebSecurityCongif {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "http://localhost:8080",
-                "http://localhost:4200"
-        ));
+        configuration.setAllowedOrigins(corsProperties.allowedOrigins());
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(false);
